@@ -1,0 +1,910 @@
+{
+  "version": "1",
+  "references": [
+    {
+      "title": "03 luther",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "f6b80c5b8b3861c3118744f6a4cb1984f30a0e67eec489364e1d998b68c55345",
+        "b2f7a4f8f926a88fe7153fc7f3d2f87a662f45ddf119415fe8178e51feea892b"
+      ],
+      "active": {
+        "density": -9.63711420316709,
+        "movement": 3.315784490610641,
+        "punch": 6.572137824495282,
+        "seconds": 165.2999999999949
+      },
+      "loud": {
+        "density": -8.938841904244544,
+        "movement": 2.1144434895286537,
+        "punch": 6.282021719396573,
+        "seconds": 89.99999999999916
+      },
+      "quiet": {
+        "density": -10.65937635144553,
+        "movement": 6.72312333498229,
+        "punch": 7.248890452288287,
+        "seconds": 79.09999999999978
+      }
+    },
+    {
+      "title": "04. BIRDS OF A FEATHER",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "9e12950b06af8525d9800aa7319aea06d9bbb818b46568617f3ba02189d0d325",
+        "4a3dcda7a54192ae9b71748072b6b8fde4caecb1f4d51e429b33dff9c5de7233"
+      ],
+      "active": {
+        "density": -9.687020434959695,
+        "movement": 4.3548223872490155,
+        "punch": 8.867624660858388,
+        "seconds": 203.29999999999274
+      },
+      "loud": {
+        "density": -8.735670172279491,
+        "movement": 2.0638078682204295,
+        "punch": 7.940341495553431,
+        "seconds": 105.99999999999825
+      },
+      "quiet": {
+        "density": -10.881878469018385,
+        "movement": 4.798473943888933,
+        "punch": 10.673640516761033,
+        "seconds": 97.59999999999873
+      }
+    },
+    {
+      "title": "07 \u2606 Espresso",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "b42bd69804eda273d4f0ac45e5a7b5e56d322aec3741b8827b1a60bbe26681fb",
+        "1a47e539450357bda96fbd0a700ff33b5d785a74264289003baff4c7f3bdf2eb"
+      ],
+      "active": {
+        "density": -8.970095620877572,
+        "movement": 2.9421909263140336,
+        "punch": 5.781019034713715,
+        "seconds": 171.09999999999457
+      },
+      "loud": {
+        "density": -8.60479356772047,
+        "movement": 1.133176961721956,
+        "punch": 5.328934150759865,
+        "seconds": 87.99999999999928
+      },
+      "quiet": {
+        "density": -9.79756736727682,
+        "movement": 4.518412204510028,
+        "punch": 6.342988338075858,
+        "seconds": 83.09999999999955
+      }
+    },
+    {
+      "title": "Arctic Monkeys - Do I Wanna Know_ (Official Video)",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "b09f68585afe51b814c55918a415eae3badab213a9ae9091742609306b0b9c46"
+      ],
+      "active": {
+        "density": -11.613260079731521,
+        "movement": 6.271917391454815,
+        "punch": 4.769444735900563,
+        "seconds": 258.29999999999023
+      },
+      "loud": {
+        "density": -10.48551432004723,
+        "movement": 4.489091803980344,
+        "punch": 3.606474049563148,
+        "seconds": 133.99999999999667
+      },
+      "quiet": {
+        "density": -12.76284489905171,
+        "movement": 3.1993717066939205,
+        "punch": 6.228956261780347,
+        "seconds": 126.79999999999707
+      }
+    },
+    {
+      "title": "Big Thief - Certainty (Official Audio)",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "a788878b31d80c2f02f63d94baa55fe58708c4b9f52bb7bda78275c4e1f2f6f7"
+      ],
+      "active": {
+        "density": -11.809700052745262,
+        "movement": 3.266274692316941,
+        "punch": 7.247864504633783,
+        "seconds": 181.59999999999397
+      },
+      "loud": {
+        "density": -11.497275241456915,
+        "movement": 1.3349088473331463,
+        "punch": 6.609616290466232,
+        "seconds": 95.99999999999882
+      },
+      "quiet": {
+        "density": -12.500173924393673,
+        "movement": 4.049934408723253,
+        "punch": 8.014874712203351,
+        "seconds": 87.69999999999929
+      }
+    },
+    {
+      "title": "FLEET FOXES - 04 Mykonos [HQ]",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "9f2a241abcc4877356d0159f5ef5c094ea04b432192a52a3cb946ac1f0db1872"
+      ],
+      "active": {
+        "density": -11.73151319793147,
+        "movement": 10.008143518800825,
+        "punch": 5.474253025273131,
+        "seconds": 252.09999999998996
+      },
+      "loud": {
+        "density": -11.110707561552758,
+        "movement": 3.489610483892612,
+        "punch": 5.416695029087652,
+        "seconds": 137.99999999999645
+      },
+      "quiet": {
+        "density": -13.15808934842065,
+        "movement": 9.74415889019313,
+        "punch": 5.538170006650656,
+        "seconds": 120.49999999999743
+      }
+    },
+    {
+      "title": "Fontaines D.C. - Starburster",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "983ca5228c428377aebe6ae05d135a87da2dea01b38ba265fb4547bdd1e13847"
+      ],
+      "active": {
+        "density": -12.033808393964508,
+        "movement": 7.6227398489500775,
+        "punch": 4.280993198222165,
+        "seconds": 214.4999999999921
+      },
+      "loud": {
+        "density": -10.920664335129315,
+        "movement": 2.0393445747924943,
+        "punch": 4.269257538300648,
+        "seconds": 111.99999999999791
+      },
+      "quiet": {
+        "density": -13.623718188785402,
+        "movement": 9.296162136050656,
+        "punch": 4.3294071269537655,
+        "seconds": 107.09999999999819
+      }
+    },
+    {
+      "title": "Intro",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "a3892cf49b6aef5d0fe9c5185f1456389522469e9878804af5a0c7e4628df625"
+      ],
+      "active": {
+        "density": -11.90509565462634,
+        "movement": 8.882486083550523,
+        "punch": 6.144337481065093,
+        "seconds": 121.29999999999738
+      },
+      "loud": {
+        "density": -11.386325419926706,
+        "movement": 3.4816159646311196,
+        "punch": 6.88965088777828,
+        "seconds": 64.00000000000064
+      },
+      "quiet": {
+        "density": -12.644104530639483,
+        "movement": 6.6817647284784965,
+        "punch": 4.694028894525171,
+        "seconds": 57.400000000000546
+      }
+    },
+    {
+      "title": "Phoebe Bridgers - Kyoto",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "6b66158d4dd42deb006b52251a1daa65f3c14d32cdfdfd6b775594d4727c6b7b"
+      ],
+      "active": {
+        "density": -10.555643742245948,
+        "movement": 2.1780108228627153,
+        "punch": 7.078459530655496,
+        "seconds": 178.69999999999413
+      },
+      "loud": {
+        "density": -10.089202146426409,
+        "movement": 1.5129061582574703,
+        "punch": 6.617606175136268,
+        "seconds": 93.99999999999893
+      },
+      "quiet": {
+        "density": -11.03553804281395,
+        "movement": 5.4539865389835445,
+        "punch": 7.426044327489709,
+        "seconds": 86.79999999999934
+      }
+    },
+    {
+      "title": "Radiohead - Weird Fishes_Arpeggi [HD]",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "a5d7a7225842a8d50b619c388f7dcd73ae4f23502e3e25cfa3b57816425b101a"
+      ],
+      "active": {
+        "density": -10.131499561147686,
+        "movement": 5.761513837423335,
+        "punch": 3.3875010343729564,
+        "seconds": 308.2000000000016
+      },
+      "loud": {
+        "density": -9.093069709374438,
+        "movement": 2.2809715333999847,
+        "punch": 2.832235258620433,
+        "seconds": 159.9999999999952
+      },
+      "quiet": {
+        "density": -11.59262749371615,
+        "movement": 5.405685325089941,
+        "punch": 4.360632910760498,
+        "seconds": 149.2999999999958
+      }
+    },
+    {
+      "title": "Tame Impala - The Less I Know The Better (Audio)",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "368f61dadbb2c5ab6ab3a45a33cbeb2e7efff66a4ce9b3ad2fdda67ea10aa80b"
+      ],
+      "active": {
+        "density": -9.74343943037417,
+        "movement": 2.186762110429126,
+        "punch": 5.247562923417926,
+        "seconds": 214.3999999999921
+      },
+      "loud": {
+        "density": -9.337486180303083,
+        "movement": 1.5783896866809561,
+        "punch": 4.689900906330493,
+        "seconds": 109.99999999999802
+      },
+      "quiet": {
+        "density": -10.32280134249679,
+        "movement": 1.6534987115461828,
+        "punch": 5.898217649250903,
+        "seconds": 106.49999999999822
+      }
+    },
+    {
+      "title": "The War On Drugs - _Red Eyes_ (Official Audio)",
+      "genre": "Alternative/indie",
+      "hashes": [
+        "d7e77bd8926cf6093ad1c6b7c5bd71771892cae28cfd53e9e5d844e1f76c98ac"
+      ],
+      "active": {
+        "density": -10.375969761453936,
+        "movement": 4.5963604122504975,
+        "punch": 5.756258946678209,
+        "seconds": 284.79999999999626
+      },
+      "loud": {
+        "density": -9.777179159838584,
+        "movement": 1.525098985700609,
+        "punch": 4.439022423410781,
+        "seconds": 149.99999999999577
+      },
+      "quiet": {
+        "density": -11.851020047802322,
+        "movement": 3.0659602152341563,
+        "punch": 7.71620521623634,
+        "seconds": 135.69999999999658
+      }
+    },
+    {
+      "title": "03 Latch (feat. Sam Smith)",
+      "genre": "EDM/house",
+      "hashes": [
+        "db63f6ff6b7180ba160ffbe79ecca1f8867e59bc1a478be8bc8be9d767eddb2a"
+      ],
+      "active": {
+        "density": -9.022257076944108,
+        "movement": 4.579444987445138,
+        "punch": 6.322637197273513,
+        "seconds": 247.59999999999022
+      },
+      "loud": {
+        "density": -8.073520626777235,
+        "movement": 1.7720968223555227,
+        "punch": 5.793710115434841,
+        "seconds": 127.999999999997
+      },
+      "quiet": {
+        "density": -10.188458212317983,
+        "movement": 4.016084020897264,
+        "punch": 7.5137350400183,
+        "seconds": 120.19999999999744
+      }
+    },
+    {
+      "title": "Bicep - Glue (Original Mix)",
+      "genre": "EDM/house",
+      "hashes": [
+        "8e50eb5b7cc62c8e8cd961b30f58289e99643c4748d602bbbbefd5f725f0049e"
+      ],
+      "active": {
+        "density": -11.912069067599107,
+        "movement": 8.40658178567299,
+        "punch": 8.422110881650026,
+        "seconds": 253.2999999999899
+      },
+      "loud": {
+        "density": -11.026832540679596,
+        "movement": 3.324647663390502,
+        "punch": 7.9371375187183215,
+        "seconds": 135.59999999999658
+      },
+      "quiet": {
+        "density": -15.00345200571512,
+        "movement": 7.633901311038235,
+        "punch": 8.905133433214683,
+        "seconds": 123.09999999999728
+      }
+    },
+    {
+      "title": "Daft Punk - Giorgio by Moroder (Official Audio)",
+      "genre": "EDM/house",
+      "hashes": [
+        "0152e87ce57e820a109083888e84cb57335765b280a3a7039b82285b21b32af4"
+      ],
+      "active": {
+        "density": -11.716016768212969,
+        "movement": 5.67594979963514,
+        "punch": 8.235957277066394,
+        "seconds": 526.5000000000512
+      },
+      "loud": {
+        "density": -11.146518564524236,
+        "movement": 2.1566159529330378,
+        "punch": 7.8601276796807324,
+        "seconds": 277.79999999999467
+      },
+      "quiet": {
+        "density": -12.85884987666795,
+        "movement": 8.345276667699462,
+        "punch": 8.847279110547397,
+        "seconds": 256.09999999998973
+      }
+    },
+    {
+      "title": "Don't You Worry Child (feat. John Martin) (Radio Edit)",
+      "genre": "EDM/house",
+      "hashes": [
+        "e4116250e0e841f1ff8f1230768fed2f573815c461f28d5dfc98bca5235d473b"
+      ],
+      "active": {
+        "density": -10.596496023377618,
+        "movement": 6.965867633132358,
+        "punch": 4.0340570470516735,
+        "seconds": 205.5999999999926
+      },
+      "loud": {
+        "density": -10.152304952136602,
+        "movement": 2.4110001084298887,
+        "punch": 2.917397848719537,
+        "seconds": 107.99999999999814
+      },
+      "quiet": {
+        "density": -12.203321999756216,
+        "movement": 7.283869788727696,
+        "punch": 5.297586463686612,
+        "seconds": 99.9999999999986
+      }
+    },
+    {
+      "title": "FISHER - Losing It (Official Audio)",
+      "genre": "EDM/house",
+      "hashes": [
+        "f86f5c85ea00fe2a84aac12c4c259d74153cb9bf0c4c3fff85101b7e53405660"
+      ],
+      "active": {
+        "density": -10.006868693945329,
+        "movement": 7.406946577874482,
+        "punch": 6.807791779576591,
+        "seconds": 243.39999999999046
+      },
+      "loud": {
+        "density": -9.4397838870046,
+        "movement": 1.1355943895458491,
+        "punch": 6.202025067674677,
+        "seconds": 125.99999999999712
+      },
+      "quiet": {
+        "density": -13.88695959894703,
+        "movement": 6.796100504641558,
+        "punch": 7.282992997016406,
+        "seconds": 121.79999999999735
+      }
+    },
+    {
+      "title": "Fred again.. - Delilah (pull me out of this)",
+      "genre": "EDM/house",
+      "hashes": [
+        "345ebd3170c4ac1d7b9bde92cc93fce8e5c185d5a04beb422ab9f7271525e6c3"
+      ],
+      "active": {
+        "density": -12.538896178199725,
+        "movement": 10.453971067468052,
+        "punch": 5.927934199976968,
+        "seconds": 235.6999999999909
+      },
+      "loud": {
+        "density": -10.571278629160293,
+        "movement": 4.082942811842891,
+        "punch": 5.709436466128537,
+        "seconds": 125.89999999999712
+      },
+      "quiet": {
+        "density": -14.990569601306353,
+        "movement": 9.510926631045498,
+        "punch": 6.077014658923443,
+        "seconds": 121.49999999999737
+      }
+    },
+    {
+      "title": "Kerri Chandler \u2013 Bar A Thym",
+      "genre": "EDM/house",
+      "hashes": [
+        "f6b7dc0c8fadfaeea63bbbd0cec9398aff2b715affbb048354e3daa327773df8"
+      ],
+      "active": {
+        "density": -13.548611420066848,
+        "movement": 1.2025298863824734,
+        "punch": 6.347547472899116,
+        "seconds": 443.90000000003243
+      },
+      "loud": {
+        "density": -13.34982433047385,
+        "movement": 0.647970345800454,
+        "punch": 5.639674553881382,
+        "seconds": 223.89999999999156
+      },
+      "quiet": {
+        "density": -13.798631513951186,
+        "movement": 1.3120079586318827,
+        "punch": 7.282403403263932,
+        "seconds": 219.9999999999918
+      }
+    },
+    {
+      "title": "Peggy Gou - (It Goes Like) Nanana",
+      "genre": "EDM/house",
+      "hashes": [
+        "7ae5e4ff8e58f495217b698ef06060afb2e9d11dea647e138b28cdfc796c70cb"
+      ],
+      "active": {
+        "density": -10.431785809775562,
+        "movement": 4.662590380329895,
+        "punch": 6.599467313479604,
+        "seconds": 227.89999999999134
+      },
+      "loud": {
+        "density": -10.123818220564997,
+        "movement": 0.956029817509954,
+        "punch": 6.147264057644365,
+        "seconds": 115.99999999999768
+      },
+      "quiet": {
+        "density": -10.849746645457845,
+        "movement": 5.124587144007515,
+        "punch": 7.152648872481586,
+        "seconds": 111.99999999999791
+      }
+    },
+    {
+      "title": "deadmau5 - Strobe",
+      "genre": "EDM/house",
+      "hashes": [
+        "de6df12a01ac08b830d8bc9bf7752ea55ccf9379c1e624a7d9739cc27c71e230"
+      ],
+      "active": {
+        "density": -9.775624291463298,
+        "movement": 7.856172425145054,
+        "punch": 5.487535318595668,
+        "seconds": 622.3000000000729
+      },
+      "loud": {
+        "density": -9.393456354906801,
+        "movement": 3.0872788304481453,
+        "punch": 6.2342966703133165,
+        "seconds": 320.00000000000426
+      },
+      "quiet": {
+        "density": -10.37632892578102,
+        "movement": 4.67857734991647,
+        "punch": 2.9462818330984177,
+        "seconds": 307.4000000000014
+      }
+    },
+    {
+      "title": "Beyonc\u00e9-CUFF IT(Official Audio)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "25a2c2cb00e7b1106eda13c91a3597a7adb38bf6991f2b2fe24f5fc53da470c2"
+      ],
+      "active": {
+        "density": -11.756010334362106,
+        "movement": 2.941294411922522,
+        "punch": 9.172607163844113,
+        "seconds": 221.3999999999917
+      },
+      "loud": {
+        "density": -10.843993497077966,
+        "movement": 1.744433447734913,
+        "punch": 8.803917438411348,
+        "seconds": 113.39999999999783
+      },
+      "quiet": {
+        "density": -12.452420420824902,
+        "movement": 3.477235423246041,
+        "punch": 9.604808739935526,
+        "seconds": 108.19999999999813
+      }
+    },
+    {
+      "title": "Bruno Mars - 24K Magic (Audio)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "0d8e458e56a6f8ef4854f618bbfb2f9f752b9d8cb588b0e18151db84dee0a8fc"
+      ],
+      "active": {
+        "density": -11.332252803960028,
+        "movement": 4.598755478539443,
+        "punch": 6.61248899928132,
+        "seconds": 221.09999999999172
+      },
+      "loud": {
+        "density": -10.873370312831756,
+        "movement": 1.3870797759200268,
+        "punch": 6.484801665569077,
+        "seconds": 113.49999999999783
+      },
+      "quiet": {
+        "density": -11.989025553682112,
+        "movement": 8.897669635223103,
+        "punch": 6.804226554476972,
+        "seconds": 107.79999999999815
+      }
+    },
+    {
+      "title": "Dua Lipa - Don't Start Now (Official Lyrics Video)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "b1cb99574a0e3e91e640fbf6bf2a81273f4e8fdd0fb3907332de70a73807fe03"
+      ],
+      "active": {
+        "density": -10.93326274842215,
+        "movement": 5.584901217935627,
+        "punch": 7.204297958601077,
+        "seconds": 177.2999999999942
+      },
+      "loud": {
+        "density": -10.441973193405323,
+        "movement": 1.7939753496724808,
+        "punch": 7.341126487232379,
+        "seconds": 93.99999999999893
+      },
+      "quiet": {
+        "density": -11.991846732153997,
+        "movement": 5.086286898625344,
+        "punch": 6.919452920803217,
+        "seconds": 85.49999999999942
+      }
+    },
+    {
+      "title": "Olivia Rodrigo - vampire (Official Lyric Video)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "82c9f0ddcd9a5a6df1d317ada137eb44d7241fd901fc37fc46158e5b9de126d6"
+      ],
+      "active": {
+        "density": -11.495546928446824,
+        "movement": 9.79113689587611,
+        "punch": 5.149167209858745,
+        "seconds": 206.39999999999256
+      },
+      "loud": {
+        "density": -11.023335584551909,
+        "movement": 2.2525261555492886,
+        "punch": 4.663701183416471,
+        "seconds": 109.69999999999804
+      },
+      "quiet": {
+        "density": -12.895727222683963,
+        "movement": 10.432271690937977,
+        "punch": 6.253000747740636,
+        "seconds": 101.6999999999985
+      }
+    },
+    {
+      "title": "SZA - Good Days (Audio)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "206ce0d19fac6fd50f56e3652bff600654e26524a9c98269a8768e6c0f4ad69d"
+      ],
+      "active": {
+        "density": -11.840985771429773,
+        "movement": 5.159170750493878,
+        "punch": 4.78892287862961,
+        "seconds": 258.0999999999902
+      },
+      "loud": {
+        "density": -11.415273634923683,
+        "movement": 2.6737551720345536,
+        "punch": 4.462149430956601,
+        "seconds": 141.99999999999622
+      },
+      "quiet": {
+        "density": -12.675520021263141,
+        "movement": 9.1133121657161,
+        "punch": 5.145886412225153,
+        "seconds": 120.49999999999743
+      }
+    },
+    {
+      "title": "The Weeknd - Blinding Lights (Official Audio)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "91bc5c96618e90442e7f2ac57cfb6dda3c0172d2435bdacb69f93ff7c434d111"
+      ],
+      "active": {
+        "density": -9.044745160255145,
+        "movement": 3.771086855113303,
+        "punch": 4.658484802373788,
+        "seconds": 196.49999999999312
+      },
+      "loud": {
+        "density": -8.77798603152509,
+        "movement": 1.1370745194058314,
+        "punch": 4.257809642878706,
+        "seconds": 101.99999999999848
+      },
+      "quiet": {
+        "density": -9.710190980636462,
+        "movement": 5.700962473737035,
+        "punch": 5.032000054327071,
+        "seconds": 94.5999999999989
+      }
+    },
+    {
+      "title": "Victoria Mon\u00e9t - On My Mama (Visualizer)",
+      "genre": "Pop/R&B",
+      "hashes": [
+        "af778f2435a38a55326d5c00f398cb603b5bd342ea4c83b1f17e5450b60e6519"
+      ],
+      "active": {
+        "density": -11.79634234514769,
+        "movement": 8.217531510527564,
+        "punch": 5.6011706759111926,
+        "seconds": 174.49999999999437
+      },
+      "loud": {
+        "density": -8.772353421290717,
+        "movement": 4.352318858528298,
+        "punch": 4.68153932708675,
+        "seconds": 93.99999999999893
+      },
+      "quiet": {
+        "density": -13.590406212801177,
+        "movement": 4.867709210945247,
+        "punch": 6.3695125037558915,
+        "seconds": 82.69999999999958
+      }
+    },
+    {
+      "title": "03 - Travis Scott - ASTROWORLD - SICKO MODE",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "b12173f0a2bbdc3f050adf0dba2a700691720152f498221ea11bbda45bb7e651",
+        "bbc74c7b3984270aa47d772ccbe435b3def40366586cfdc89a83462387df42de",
+        "cd8807d6b80d3540f1dfa8386c4b806bb6ccce590acd38553c7db690cd90a9ff"
+      ],
+      "active": {
+        "density": -9.77649276710822,
+        "movement": 9.148787929302983,
+        "punch": 7.39888488701358,
+        "seconds": 303.9000000000006
+      },
+      "loud": {
+        "density": -8.205561457019868,
+        "movement": 2.8777086206479465,
+        "punch": 7.686037717076551,
+        "seconds": 155.79999999999544
+      },
+      "quiet": {
+        "density": -12.110265386873495,
+        "movement": 9.162056838879321,
+        "punch": 7.1129401931332525,
+        "seconds": 152.49999999999562
+      }
+    },
+    {
+      "title": "Dr. Dre - Still D.R.E. (feat. Snoop Dogg)",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "da51f24c41235e32d93a0e051289c9a63d73f1fb408926dada823441a795d23f"
+      ],
+      "active": {
+        "density": -12.114470581354224,
+        "movement": 2.4973052439592127,
+        "punch": 9.824957269919818,
+        "seconds": 267.2999999999923
+      },
+      "loud": {
+        "density": -11.798046780175062,
+        "movement": 1.5991375240167471,
+        "punch": 9.37389743525852,
+        "seconds": 135.89999999999657
+      },
+      "quiet": {
+        "density": -12.741023814908903,
+        "movement": 2.869232600286301,
+        "punch": 10.361711006648996,
+        "seconds": 131.5999999999968
+      }
+    },
+    {
+      "title": "Future - Mask Off (Lyrics)",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "dffc32fd1b8af877d3af88593524efed682e162bbce028116dd526fe1a5a2e75"
+      ],
+      "active": {
+        "density": -8.237501901698078,
+        "movement": 3.458647585594913,
+        "punch": 4.622044614734435,
+        "seconds": 187.9999999999936
+      },
+      "loud": {
+        "density": -8.028143212202643,
+        "movement": 1.24344944490685,
+        "punch": 4.044626848709289,
+        "seconds": 101.99999999999848
+      },
+      "quiet": {
+        "density": -8.873361295551064,
+        "movement": 9.714887433229336,
+        "punch": 5.489282155174694,
+        "seconds": 86.49999999999936
+      }
+    },
+    {
+      "title": "JID - Surround Sound ft. 21 Savage & Baby Tate",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "9db98eb04704f176b480fad6f160c9f722b5b031b67dc79348d2aaf7c8ed0a90"
+      ],
+      "active": {
+        "density": -9.931807378021531,
+        "movement": 10.737339650313215,
+        "punch": 5.307967738261057,
+        "seconds": 226.9999999999914
+      },
+      "loud": {
+        "density": -8.61699932300405,
+        "movement": 2.710270063398302,
+        "punch": 4.865871639878251,
+        "seconds": 115.99999999999768
+      },
+      "quiet": {
+        "density": -12.80844683188578,
+        "movement": 10.34032911335562,
+        "punch": 5.578652975523051,
+        "seconds": 114.19999999999779
+      }
+    },
+    {
+      "title": "Little Simz - 'Introvert'",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "c55cb440912307a7a46089d15e0eac289908f348dd11fb9c091ab4bc0c4661cb"
+      ],
+      "active": {
+        "density": -10.13384102778715,
+        "movement": 6.117509199284786,
+        "punch": 4.3423734083344465,
+        "seconds": 355.7000000000124
+      },
+      "loud": {
+        "density": -9.15359450744991,
+        "movement": 2.208669397590157,
+        "punch": 4.299595949541736,
+        "seconds": 181.99999999999395
+      },
+      "quiet": {
+        "density": -11.681469445753867,
+        "movement": 5.3915613528778845,
+        "punch": 4.519547282185941,
+        "seconds": 174.29999999999438
+      }
+    },
+    {
+      "title": "Mac Miller - Ladders",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "ac712b423d151c462b30eed9276390968675c9f07d7ac8135ab2f34b32d71728"
+      ],
+      "active": {
+        "density": -11.070605485393935,
+        "movement": 10.973713267763703,
+        "punch": 6.713873354514111,
+        "seconds": 282.59999999999576
+      },
+      "loud": {
+        "density": -10.283223521342798,
+        "movement": 1.8854594008532715,
+        "punch": 7.338151297326678,
+        "seconds": 143.79999999999612
+      },
+      "quiet": {
+        "density": -13.395748548821821,
+        "movement": 11.776623571286668,
+        "punch": 5.866204253205612,
+        "seconds": 140.5999999999963
+      }
+    },
+    {
+      "title": "Tyler, The Creator - Earfquake (Audio)",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "87255f336f5b008a7dc662c3943f7acb6137c0dea1733bf5a6c8118e03469a7a"
+      ],
+      "active": {
+        "density": -9.134162425209126,
+        "movement": 13.495252501938573,
+        "punch": 4.617066816088858,
+        "seconds": 184.59016666666048
+      },
+      "loud": {
+        "density": -7.856934876157828,
+        "movement": 1.820138685524384,
+        "punch": 3.427846913098139,
+        "seconds": 95.89999999999883
+      },
+      "quiet": {
+        "density": -13.95706310772388,
+        "movement": 9.664227548820696,
+        "punch": 5.4425845329685325,
+        "seconds": 93.49016666666563
+      }
+    },
+    {
+      "title": "Vince Staples - Norf Norf (Audio) (Explicit)",
+      "genre": "Trap/hiphop",
+      "hashes": [
+        "6e637f62b5558363f084b008dd7753e407fbc83524db418ba4617cf4868a084c"
+      ],
+      "active": {
+        "density": -11.083691337883518,
+        "movement": 6.598104404994329,
+        "punch": 7.100136730261483,
+        "seconds": 181.79999999999396
+      },
+      "loud": {
+        "density": -10.458310350908057,
+        "movement": 2.485039778911485,
+        "punch": 6.61735515355035,
+        "seconds": 91.99999999999905
+      },
+      "quiet": {
+        "density": -12.165432969549824,
+        "movement": 6.393859769922667,
+        "punch": 8.092194250328413,
+        "seconds": 90.39999999999914
+      }
+    }
+  ]
+}
