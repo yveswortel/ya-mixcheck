@@ -1,0 +1,12 @@
+build/
+dist/
+Validation/
+research/
+ReferenceLibrary/catalog.json
+ReferenceLibrary/notes.txt
+.DS_Store
+*.wav
+*.mp3
+*.flac
+*.aiff
+*.m4a
