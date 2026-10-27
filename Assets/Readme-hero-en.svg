@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
+<title id="title">YA / MixCheck</title><desc id="desc">A second look at your mix. Yves Wortel.</desc>
+<rect width="1280" height="360" rx="12" fill="#F2F0E9"/>
+<text x="64" y="58" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#60665C">Yves Wortel</text>
+<text x="1216" y="58" text-anchor="end" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#60665C">1.0</text>
+<text x="60" y="180" font-family="Georgia,'Times New Roman',serif" font-size="104" letter-spacing="-4" fill="#171917">YA / MixCheck</text>
+<text x="66" y="239" font-family="Arial,Helvetica,sans-serif" font-size="30" fill="#4C5049">A second look at your mix.</text>
+<path d="M64 289H1216" stroke="#C9C8BF" stroke-width="1"/>
+<text x="66" y="326" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#60665C">Tonal balance. Dynamics. Perspective.</text>
+<text x="1216" y="326" text-anchor="end" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#60665C">yveswortel.com</text>
+</svg>
