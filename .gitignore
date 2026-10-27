@@ -10,3 +10,10 @@ ReferenceLibrary/notes.txt
 *.flac
 *.aiff
 *.m4a
+
+__pycache__/
+*.pyc
+.venv/
+ebu-loudness-test-setv05/
+New-Research/
+Review-*/

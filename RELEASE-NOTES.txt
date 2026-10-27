@@ -1,0 +1,57 @@
+YA-MixCheck 1.0.0 — build 21
+27 oktober 2026 · lokale distributiekandidaat
+Apple Silicon · macOS 15 of nieuwer
+
+Doel
+Een tweede blik op je mix: meetresultaten en maximaal drie contextafhankelijke
+luisteradviezen. Een hulpmiddel voor je eigen oordeel, geen automatische
+kwaliteitsgoedkeuring. De bronbestanden blijven ongewijzigd.
+
+In deze eerste 1.0
+• LUFS-I/M/S, LRA, pieken, stereo en technische luisterkandidaten.
+• Zevenbandige toonbalans en hele-track dynamics: dichtheid, punch en beweging,
+  vergeleken met een compacte genrereferentiebibliotheek.
+• Lokale versus aanhoudende afwijkingen, eenvoudige arrangementsecties en
+  voorwaardelijk advies, met maximaal drie prioriteiten.
+• Playback, referentie A/B, niveaumatching en een tijdelijke EQ-luisterpreview.
+  Geldige previews worden binnen de sessie hergebruikt.
+• Dashboard met volledige klikvlakken, toonbalansschaal ±6/±12 dB en rustige
+  detailvensters. Meetmethode en referenties bereikbaar vanaf het importscherm.
+• HTML-rapport in de branding van Yves Wortel, JSON-metingen en generieke
+  CSV-markers. Export bevat geen audio of volledige brondirectorypaden.
+• Geïsoleerde lokale invoersnapshots, annulering en cacheherstel.
+
+Bediening
+⌘O: open audio. ⇧⌘O: open referentie. Spatie: afspelen/pauzeren.
+⇧⌘S: HTML-rapport bewaren. Escape: dialoog sluiten. ⌘Q: afsluiten.
+Ondersteunde invoer: WAV, AIFF, FLAC en MP3. Geen Homebrew, Java of Xcode nodig
+om de app te gebruiken. De EQ-preview verandert alleen de tijdelijke luisterkopie.
+
+Bekende grenzen
+• Genrereferenties zijn een pilotcollectie, geen universele ideale EQ-curve.
+  Air is beschrijvend door codecverschillen. Advieskwaliteit wordt na deze
+  1.0-build door Yves en zijn testers verder beoordeeld.
+• Klikken, stiltes en plateaus zijn heuristische luisterkandidaten. Instrument-
+  of pluginuitval wordt niet gegarandeerd gevonden; artistieke keuzes zijn mogelijk.
+• Historische officiële EBU-minimumtests: 68 numerieke en 2 tijdverloopchecks
+  voor mono/stereo op 48 kHz. De meetkern is behouden. Geen certificering of
+  all-rateclaim. Vanaf 192 kHz alleen samplepeak, geen true-peakinterpolatie.
+  Korte-LRA/randgevallen en aanvullende kruiscontrole blijven begrensd.
+• Echte offline/onderbroken grotere iCloud-downloads zijn niet volledig getest.
+  Gebruik voor de eerste testronde bij voorkeur volledig lokaal beschikbare audio.
+• Twee uur 96 kHz is getest: circa 9 minuten analyse en 165 MiB piek-RAM.
+  De gemeten groei van 134 MiB lag boven het interne budget van 128 MiB;
+  dit blijft een aandachtspunt en is op zichzelf geen bewezen geheugenlek.
+• De nieuwe rapportbranding is in HTML bekeken. Native print/PDF-paginatie is
+  nog niet opnieuw visueel afgetekend. Generieke CSV is geen gevalideerd Logic-formaat.
+• Sessies terugladen, 24-bit WAV-export en AUv3 zijn geen functies van 1.0.
+
+Distributiestatus
+Dit pakket is lokaal gebouwd, ad-hoc ondertekend en niet genotariseerd.
+De 1.0-installatiecontrole op een tweede Mac en de Developer ID-/notarisatieroute
+zijn op verzoek uitgesteld. Standaard Gatekeeper-acceptatie is niet bevestigd.
+Geen GitHub-publicatie uitgevoerd. Omzeil geen systeembeveiliging om te testen.
+Buildmanifest en licenties staan in de app onder Contents/Resources.
+
+Yves Audio / Yves Wortel
+https://yveswortel.com

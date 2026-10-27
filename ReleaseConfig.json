@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "build": "21",
+  "architecture": "arm64",
+  "minimumMacOS": "15.0",
+  "bundleIdentifier": "audio.yves.mixcheck"
+}
