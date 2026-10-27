@@ -1,3 +1,5 @@
+[Nederlands](CHANGELOG.md) · [English](CHANGELOG.en.md)
+
 # Changelog
 
 ## 1.0.0 · build 21 · 27 oktober 2026
@@ -29,3 +31,10 @@ volledig gevalideerd. Vanaf 192 kHz alleen samplepeak.
 `RELEASE-NOTES.txt` is de ongewijzigde, in de app opgenomen momentopname van het
 bouwen op 27 oktober. De distributiestatus in die momentopname gaat vooraf aan
 de GitHub-release; de actuele publicatiestatus staat bij GitHub Releases.
+
+### Documentatie-update
+
+Engelse README, bouwgids, validatie-informatie en changelog toegevoegd, met links
+naar de Nederlandse versies. Een Engelse installatie-PDF is los aan de release
+toegevoegd. De gepubliceerde 1.0-app, de taal daarvan, DMG-bytes en checksum blijven
+ongewijzigd.

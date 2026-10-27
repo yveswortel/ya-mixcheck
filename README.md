@@ -1,3 +1,5 @@
+<p align="center"><strong>Nederlands</strong> · <a href="README.en.md">English</a></p>
+
 <p align="center">
   <img src="Assets/Readme-hero.svg" alt="YA / MixCheck — Een tweede blik op je mix. Yves Wortel." width="100%">
 </p>
@@ -55,6 +57,10 @@ repository of rechtstreeks van Yves hebt ontvangen.
 
 De korte [installatiehandleiding](Assets/Installer/Installatie.pdf) zit ook in de
 DMG. Je hebt geen Homebrew, Java of Xcode nodig om de app te gebruiken.
+
+De GitHub-documentatie is beschikbaar in Nederlands en Engels. De appinterface
+en de handleiding in de bestaande 1.0-DMG zijn nog Nederlandstalig. Een losse
+[Engelse installatiegids](Assets/Installer/Installation.en.pdf) is beschikbaar.
 
 <details>
 <summary>Bekijk het installatievenster</summary>
