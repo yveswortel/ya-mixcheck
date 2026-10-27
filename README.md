@@ -1,16 +1,16 @@
-<p align="center"><strong>Nederlands</strong> · <a href="README.en.md">English</a></p>
+<p align="center"><strong>English</strong> · <a href="README.nl.md">Nederlands</a></p>
 
 <p align="center">
-  <img src="Assets/Readme-hero.svg" alt="YA / MixCheck — Een tweede blik op je mix. Yves Wortel." width="100%">
+  <img src="Assets/Readme-hero-en.svg" alt="YA / MixCheck — A second look at your mix. Yves Wortel." width="100%">
 </p>
 
 <p align="center">
-  <strong>macOS 15+ &nbsp; / &nbsp; Apple Silicon &nbsp; / &nbsp; Versie 1.0</strong><br>
+  <strong>macOS 15+ &nbsp; / &nbsp; Apple Silicon &nbsp; / &nbsp; Version 1.0</strong><br>
   WAV · AIFF · FLAC · MP3
 </p>
 
 <p align="center">
-  <a href="https://github.com/yveswortel/ya-mixcheck/releases/download/v1.0.0/YA-MixCheck-1.0.0-arm64.dmg"><strong>Download voor Mac</strong></a>
+  <a href="https://github.com/yveswortel/ya-mixcheck/releases/download/v1.0.0/YA-MixCheck-1.0.0-arm64.dmg"><strong>Download for Mac</strong></a>
   &nbsp; · &nbsp;
   <a href="https://github.com/yveswortel/ya-mixcheck/releases/tag/v1.0.0">Release notes</a>
   &nbsp; · &nbsp;
@@ -19,76 +19,77 @@
 
 ---
 
-## Frisse oren, onderbouwde vragen
+## Fresh perspective, informed questions
 
-Na een lange mixsessie is afstand nemen lastig. YA-MixCheck geeft je een tweede
-blik op je export: toonbalans, dynamics en technische signalen, vertaald naar
-maximaal drie concrete luisteradviezen.
+After a long mixing session, it can be hard to hear your work objectively.
+YA-MixCheck gives you a second look at your export: tonal balance, dynamics and
+technical observations, distilled into up to three focused listening suggestions.
 
-Sleep je bestand in de app, kies een genre en bepaal zelf wat je met de bevindingen
-doet. De app analyseert lokaal en laat het originele audiobestand ongewijzigd.
+Drop a file into the app, choose a genre and decide what to do with the findings.
+Analysis runs locally on your Mac and leaves the original audio file unchanged.
 
-## Wat je kunt checken
+## What you can check
 
-| Onderdeel | Wat het je laat zien |
+| Area | What it shows |
 | :--- | :--- |
-| **Toonbalans** | Sub, Bass, Low-mid, Body, Mids, High en Air tegenover een compacte genrereferentie. |
-| **Dynamics** | Dichtheid, punch en beweging over de hele track. |
-| **Luidheid & pieken** | LUFS, LRA, samplepeak en — waar ondersteund — geschatte true peak. |
-| **Stereo & techniek** | Correlatie, mono-energie, kanaalbalans en mogelijke kliks, dropouts en clipping. |
-| **Luisteradvies** | Combinaties van metingen, met onderscheid tussen lokale en aanhoudende afwijkingen. |
-| **Vergelijken** | Referentie A/B en tijdelijke EQ-preview, met niveaumatching. |
-| **Rapportage** | Een leesbaar HTML-rapport, JSON-metingen en CSV-markers. |
+| **Tonal balance** | Sub, Bass, Low-mid, Body, Mids, High and Air against a small genre reference collection. |
+| **Dynamics** | Density, punch and movement across the whole track. |
+| **Loudness & peaks** | LUFS, LRA, sample peak and, where supported, estimated true peak. |
+| **Stereo & technical checks** | Correlation, mono energy, channel balance and possible clicks, dropouts and clipping. |
+| **Listening suggestions** | Combined observations that distinguish local from persistent deviations. |
+| **Comparison** | Reference A/B and a temporary EQ preview, with level matching. |
+| **Reports** | A readable HTML report, JSON measurements and CSV markers. |
 
-Een afwijking is geen automatische fout. Een luide master, diepe bas of brede
-stereo kan een bewuste keuze zijn. Meetwaarden ondersteunen je oren; ze bepalen
-niet hoe je muziek moet klinken.
+A deviation is not automatically a fault. A loud master, deep bass or wide stereo
+image can be an intentional choice. Measurements support your ears; they do not
+decide how your music should sound.
 
-## Installeren
+## Installation
 
-1. [Download de DMG](https://github.com/yveswortel/ya-mixcheck/releases/download/v1.0.0/YA-MixCheck-1.0.0-arm64.dmg) en open hem.
-2. Sleep **YA-MixCheck** naar **Apps**.
-3. Open de app vanuit **Apps**.
+1. [Download the DMG](https://github.com/yveswortel/ya-mixcheck/releases/download/v1.0.0/YA-MixCheck-1.0.0-arm64.dmg) and open it.
+2. Drag **YA-MixCheck** to **Applications** (the folder shortcut is labelled **Apps**).
+3. Open the app from **Applications**.
 
-Deze versie is niet door Apple genotariseerd. Blokkeert macOS de eerste start?
-Ga na je openingspoging naar **Systeeminstellingen → Privacy en beveiliging →
-Open toch**, en bevestig met **Open**. Gebruik alleen het pakket dat je via deze
-repository of rechtstreeks van Yves hebt ontvangen.
+This version is not notarized by Apple. If macOS blocks the first launch, attempt
+to open the app, then go to **System Settings → Privacy & Security → Open Anyway**
+and confirm with **Open**. Only do this for the package obtained from this
+repository or directly from Yves.
 
-De korte [installatiehandleiding](Assets/Installer/Installatie.pdf) zit ook in de
-DMG. Je hebt geen Homebrew, Java of Xcode nodig om de app te gebruiken.
+An [English installation guide](Assets/Installer/Installation.en.pdf) is available
+separately and attached to the release. The original DMG contains the Dutch guide.
+You do not need Homebrew, Java or Xcode to use the app.
 
-De GitHub-documentatie is beschikbaar in Nederlands en Engels. De appinterface
-en de handleiding in de bestaande 1.0-DMG zijn nog Nederlandstalig. Een losse
-[Engelse installatiegids](Assets/Installer/Installation.en.pdf) is beschikbaar.
+**Language:** GitHub documentation is available in Dutch and English. The 1.0 app
+interface, its advice and exported reports are currently in Dutch. English app
+support is not part of this documentation update.
 
 <details>
-<summary>Bekijk het installatievenster</summary>
+<summary>View the installation window (Dutch)</summary>
 
-![Installatievenster in de Yves Wortel-branding](Assets/Installer-window.png)
+![Installation window in Yves Wortel branding](Assets/Installer-window.png)
 
 </details>
 
-## Wat 1.0 wel en niet belooft
+## What 1.0 does and does not promise
 
-De referentiecollectie is nog een pilot. Genrebanden zijn context, geen ideale
-curve voor elk nummer. Klik-, dropout- en clippingmeldingen zijn luisterkandidaten;
-de app kan de artistieke intentie niet vaststellen.
+The reference collection is still a pilot. Genre ranges provide context, not an
+ideal curve for every track. Click, dropout and clipping flags are candidates for
+listening checks; the app cannot determine artistic intent.
 
-De meetkern doorstond de toepasselijke officiële EBU-minimumtests op **48 kHz,
-mono/stereo**. Dat is geen certificering voor alle samplefrequenties. Vanaf
-**192 kHz** toont de app alleen samplepeak. Gebruik voor de eerste testronde
-bij voorkeur volledig lokaal beschikbare audio; de volledige iCloud-foutmatrix
-is nog niet afgetekend.
+The measurement engine passed the applicable official EBU minimum tests at
+**48 kHz, mono/stereo**. This is not certification across all sample rates. At
+**192 kHz and above**, the app reports sample peak only. For the first testing
+round, use audio that is fully available locally; the complete iCloud failure
+matrix has not yet been signed off.
 
-Advieskwaliteit wordt met testers verder beoordeeld. Sessies heropenen,
-24-bit WAV-export en een Audio Unit-versie zijn geen functies van 1.0.
+Advice quality will be assessed further with testers. Reopening saved sessions,
+24-bit WAV export and an Audio Unit version are not features of 1.0.
 
-[Testresultaten en bekende grenzen](docs/VALIDATION.md) · [Wijzigingen](CHANGELOG.md)
+[Test coverage and known limits](docs/VALIDATION.en.md) · [Changelog](CHANGELOG.en.md)
 
-## Zelf bouwen
+## Build from source
 
-Op een Apple Silicon-Mac met macOS 15+, Xcode Command Line Tools en Python 3:
+On an Apple Silicon Mac with macOS 15+, Xcode Command Line Tools and Python 3:
 
 ```sh
 bash scripts/build.sh
@@ -96,20 +97,21 @@ build/YA-MixCheck.app/Contents/MacOS/YA-MixCheck --self-test
 bash scripts/package.sh
 ```
 
-De meetkern gebruikt Swift, C en Apple-frameworks. Externe componenten zijn
-meegeleverd; een JUCE-installatie is niet nodig. Zie [bouw- en verpakkingsinstructies](docs/BUILD.md).
+The app uses Swift, C and Apple frameworks. Third-party components are included;
+a JUCE installation is not required. See the [build and packaging guide](docs/BUILD.en.md).
 
 ## Feedback
 
-Maak een [issue](https://github.com/yveswortel/ya-mixcheck/issues) met je macOS-versie,
-appversie, bestandsformaat en de stappen om het probleem te herhalen. Deel bij
-verkeerd advies ook de gekozen genrecontext. Upload alleen audio die je mag delen.
+Open an [issue](https://github.com/yveswortel/ya-mixcheck/issues) with your macOS
+version, app version, file format and steps to reproduce the problem. For advice
+that seems wrong, include the selected genre. Only upload audio you are allowed
+to share. Feedback is welcome in Dutch or English.
 
 ---
 
 **Yves Audio / Yves Wortel** · [yveswortel.com](https://yveswortel.com)
 
-Credits: [libebur128](Vendor/COPYING), [minimp3](Vendor/minimp3/LICENSE) en
-[dr_flac](Vendor/dr_libs/LICENSE). Het app-icoon gebruikt Rosemartin van Eko Bimantara;
-de [fontvoorwaarden](Assets/Fonts/Rosemartin/LICENSE.txt) zijn meegeleverd.
-Voor de eigen projectcode is momenteel geen algemene open-sourcelicentie toegekend.
+Credits: [libebur128](Vendor/COPYING), [minimp3](Vendor/minimp3/LICENSE) and
+[dr_flac](Vendor/dr_libs/LICENSE). The app icon uses Rosemartin by Eko Bimantara;
+the original [font terms](Assets/Fonts/Rosemartin/LICENSE.txt) are included.
+No general open-source licence has currently been granted for the project's own code.
