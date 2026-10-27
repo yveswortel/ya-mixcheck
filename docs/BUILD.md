@@ -1,3 +1,5 @@
+[Nederlands](BUILD.md) · [English](BUILD.en.md)
+
 # Bouwen en verpakken
 
 Apple Silicon, macOS 15+, Xcode Command Line Tools en Python 3 zijn vereist.
@@ -35,6 +37,11 @@ gereproduceerd met `swift scripts/make_icon.swift Assets`.
 De DMG bevat alleen de app, een Apps-link en de installatiehandleiding. De
 packager weigert een bestaand bestand te overschrijven en controleert de
 gemounte en gekopieerde app. Developer ID en notarization zijn niet ingesteld.
+
+De losse Engelse gids wordt gegenereerd met
+`python3 scripts/make_installation_guide_en.py` (ReportLab en dezelfde macOS-fonts).
+Die staat als extra download bij de GitHub-release; de bestaande 1.0-DMG en
+de Nederlandstalige appinterface en rapporten blijven ongewijzigd.
 
 ## Headless metingen
 

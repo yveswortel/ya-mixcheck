@@ -1,3 +1,5 @@
+[Nederlands](VALIDATION.md) · [English](VALIDATION.en.md)
+
 # Validatie van 1.0.0
 
 Deze resultaten beschrijven de uitgevoerde controles. Ze vormen geen volledige
