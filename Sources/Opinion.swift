@@ -1,6 +1,6 @@
 import Foundation
 
-struct ClippingEvidence: Codable {
+struct ClippingEvidence: Codable, Sendable {
     var railSamples:Int64?; var totalSamples:Int64
     var flatSamples:Int64; var lowLevelFlatSamples:Int64 = 0; var flatRuns:Int64; var longestFlatFrames:Int64
     var events:[Incident]

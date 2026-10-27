@@ -1,6 +1,6 @@
 import Foundation
 
-struct DynamicsSlice:Codable {var start:Double;var duration:Double;var rms:Double;var crest:Double;var onset:Double}
+struct DynamicsSlice:Codable, Sendable {var start:Double;var duration:Double;var rms:Double;var crest:Double;var onset:Double}
 // 10 ms envelopes, summarized every 100 ms. No allocation per sample, channel energy summed.
 final class DynamicsDetector {
     let rate:Double,channels:Int,hop:Int
@@ -51,9 +51,13 @@ func summarizeDynamics(_ input:[DynamicsSlice])->DynamicsSummary {
 struct DynamicsReference:Codable {var title:String;var genre:String;var hashes:[String];var active:DynamicsSummary;var loud:DynamicsSummary;var quiet:DynamicsSummary}
 struct DynamicsLibrary:Codable {
     var version:String;var references:[DynamicsReference]
-    static let shared:DynamicsLibrary = {
-        guard let u=Bundle.main.url(forResource:"DynamicsReferences",withExtension:"json"),let d=try? Data(contentsOf:u),let l=try? JSONDecoder().decode(Self.self,from:d),l.version=="1" else{return Self(version:"1",references:[])};return l
-    }()
+    var loadIssue:String? = nil
+    static func load(_ data:Data?)->DynamicsLibrary {
+        guard let data,let l=try? JSONDecoder().decode(Self.self,from:data) else{return Self(version:"unavailable",references:[],loadIssue:"Dynamicsreferenties ontbreken of zijn beschadigd.")}
+        guard l.version=="1" else{return Self(version:l.version,references:[],loadIssue:"Niet-ondersteunde dynamicsbibliotheekversie \(l.version).")}
+        return l
+    }
+    static let shared:DynamicsLibrary = load(Bundle.main.url(forResource:"DynamicsReferences",withExtension:"json").flatMap{try? Data(contentsOf:$0)})
 }
 func dynamicsModes(_ slices:[DynamicsSlice])->[String:DynamicsSummary]{
     // Select complete 2s windows, preserving within-window transient structure.
@@ -66,32 +70,37 @@ struct DynamicsMetric:Codable,Identifiable {var id:String;var name:String;var va
 struct PassageDynamics:Codable,Identifiable {
     var id:Int;var start:Double;var end:Double;var mode:String;var referenceCount:Int;var summary:DynamicsSummary;var metrics:[DynamicsMetric]
 }
-func passageDynamics(_ a:Analysis,sections:[ArrangementSection],genre:String,library:DynamicsLibrary = .shared)->[PassageDynamics]{
-    let refs=library.references.filter{$0.genre==genre && !$0.hashes.contains(a.sha256)}
+func passageDynamics(_ a:Analysis,sections:[ArrangementSection],genre:String,library:DynamicsLibrary = .shared,index:DynamicsSliceIndex?=nil)->[PassageDynamics]{
+    let index=index ?? DynamicsSliceIndex(a.dynamics)
+    let refs=library.references.filter{$0.genre==genre && !$0.hashes.contains(a.assessmentHash)}
     return sections.map{s in
-        let summary=summarizeDynamics(a.dynamics.filter{$0.start>=s.start && $0.start+$0.duration<=s.end+0.001})
+        let summary=summarizeDynamics(index.within(start:s.start,end:s.end))
         let quiet=s.label=="Rustiger",targets=refs.map{quiet ? $0.quiet:$0.loud}
         return PassageDynamics(id:s.id,start:s.start,end:s.end,mode:quiet ? "Rustigere referentievensters":"Luidere referentievensters",referenceCount:refs.count,summary:summary,metrics:dynamicsMetrics(summary,targets:targets))
     }
 }
 struct ListeningAdvice:Codable,Identifiable {var id:String;var title:String;var evidence:String;var listen:String;var action:String;var start:Double;var priority:Double;var support:Double = 0}
 func listeningAdvice(_ a:Analysis,sections:[ArrangementSection],genre:String,purpose:String,library:DynamicsLibrary = .shared)->[ListeningAdvice]{
+    listeningAdvice(RecommendationAnalysis(a,genre:genre,sections:sections,library:library),purpose:purpose)
+}
+func listeningAdvice(_ context:RecommendationAnalysis,purpose:String)->[ListeningAdvice]{
+    let a=context.analysis,sections=context.sections,genre=context.genre
     var choices=[ListeningAdvice]()
     // Technical integrity takes precedence; tonal/dynamics choices are never labelled faults.
     for o in a.secondOpinion(purpose:purpose) where ["overrange","channel-balance","mono","click","silence"].contains(o.id){
         if o.id=="overrange",a.codec.hasPrefix("MP3"),(a.samplePeak ?? 0)<=1 {continue}
         choices.append(ListeningAdvice(id:o.id,title:o.title,evidence:o.evidence,listen:"Beluister dit moment en vergelijk met de bedoelde export.",action:o.action,start:Double(o.startFrame ?? 0)/a.sampleRate,priority:100))
     }
-    let ds=passageDynamics(a,sections:sections,genre:genre,library:library)
+    let ds=context.passages
     for s in sections {
         guard s.end-s.start>=8,let d=ds.first(where:{$0.id==s.id}),d.summary.seconds>=8 else{continue}
-        let tone=assessTone(a.toneSlices.filter{$0.center>=s.start && $0.center<s.end},genre:genre,hash:a.sha256,quiet:s.label=="Rustiger")
+        let tone=assessTone(a.toneSlices.filter{$0.center>=s.start && $0.center<s.end},genre:genre,hash:a.assessmentHash,quiet:s.label=="Rustiger")
         func add(_ id:String,_ title:String,_ evidence:String,_ listen:String,_ action:String,_ priority:Double){choices.append(ListeningAdvice(id:id,title:title,evidence:evidence,listen:listen,action:action,start:s.start,priority:priority,support:s.end-s.start))}
         func low(_ id:String,_ margin:Double)->Bool{guard let m=d.metrics.first(where:{$0.id==id}),let v=m.value,let lo=m.lower else{return false};return v<lo-margin}
         func high(_ id:String,_ margin:Double)->Bool{guard let m=d.metrics.first(where:{$0.id==id}),let v=m.value,let hi=m.upper else{return false};return v>hi+margin}
         let bass=tone.advice.first{$0.id=="bass"}
         if let bass,low("punch",1.5),tone.referenceCount>=5 {
-            let focus=genre=="Trap/hiphop" ? "Blijft de kick herkenbaar naast de aangehouden 808?":"Komt de kick los van de basstaart, of voelt het laag voortdurend gevuld?"
+            let focus="Blijven ritmische accenten herkenbaar naast het prominente laag? De aanzetmeting is volbandig en isoleert geen kick of bas."
             add("low-punch","Controleer gewicht tegenover aanslag",bass.evidence+" Het globale aanzetcontrast is ook lager dan bij deze referenties.",focus,"Vergelijk eerst basniveau en sustain. Probeer alleen bij hoorbare bedekking een kortere basstaart of minder laag; geen automatische master-EQ-cut.",60)
         }
         if high("density",1),low("punch",1.5),low("movement",0.5){
@@ -125,7 +134,7 @@ struct TrackDynamics:Codable {
     var referenceCount:Int;var summary:DynamicsSummary;var metrics:[DynamicsMetric]
 }
 func trackDynamics(_ a:Analysis,genre:String,library:DynamicsLibrary = .shared)->TrackDynamics {
-    let refs=library.references.filter{$0.genre==genre && !$0.hashes.contains(a.sha256)}
+    let refs=library.references.filter{$0.genre==genre && !$0.hashes.contains(a.assessmentHash)}
     let summary=summarizeDynamics(a.dynamics)
     return TrackDynamics(referenceCount:refs.count,summary:summary,metrics:dynamicsMetrics(summary,targets:refs.map{$0.active}))
 }

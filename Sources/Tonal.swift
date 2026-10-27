@@ -16,7 +16,7 @@ func sevenToneBands(_ raw:[Double?])->[Double?] {
 
 func quantile(_ values:[Double],_ p:Double)->Double? {let a=values.filter{$0.isFinite}.sorted();guard !a.isEmpty else{return nil};let x=Double(a.count-1)*p;let i=Int(x);return a[i]+(a[min(i+1,a.count-1)]-a[i])*(x-Double(i))}
 func powerDB(_ value:Double)->Double? {value>1e-25 ? 10*log10(value):nil}
-struct ToneSlice:Codable {
+struct ToneSlice:Codable, Sendable {
     var start:Double;var duration:Double;var rms:Double?;var bands:[Double?];var lowContrast:Double?;var lowMono:Double?
     var center:Double{start+duration/2}
 }
@@ -85,10 +85,15 @@ func arrangement(_ slices:[ToneSlice],duration:Double,manual:[Double]?=nil)->[Ar
 struct ToneReference:Codable {var title:String;var genre:String;var hashes:[String];var active:ToneSummary;var loud:ToneSummary;var quiet:ToneSummary}
 struct ToneLibrary:Codable {
     var version:String;var method:String;var references:[ToneReference]
-    static let shared:ToneLibrary = {
-        guard let url=Bundle.main.url(forResource:"ToneReferences",withExtension:"json"),let data=try? Data(contentsOf:url),let library=try? JSONDecoder().decode(ToneLibrary.self,from:data),library.version=="0.4.0" else{return ToneLibrary(version:"unavailable",method:"Geen referentieprofielen beschikbaar",references:[])}
-        return library
-    }()
+    var loadIssue:String? = nil
+    static func load(_ data:Data?)->ToneLibrary {
+        guard let data,let l=try? JSONDecoder().decode(Self.self,from:data) else{return Self(version:"unavailable",method:"",references:[],loadIssue:"Toonreferenties ontbreken of zijn beschadigd; genrevergelijking niet beschikbaar.")}
+        guard l.version=="0.4.0" else{return Self(version:l.version,method:l.method,references:[],loadIssue:"Niet-ondersteunde toonbibliotheekversie \(l.version); genrevergelijking niet beschikbaar.")}
+        guard l.references.allSatisfy({[$0.active,$0.loud,$0.quiet].allSatisfy{$0.bands.count==8}}) else{return Self(version:l.version,method:l.method,references:[],loadIssue:"Toonbibliotheek bevat ongeldige bandgegevens.")}
+        return l
+    }
+    static let shared:ToneLibrary = load(Bundle.main.url(forResource:"ToneReferences",withExtension:"json").flatMap{try? Data(contentsOf:$0)})
+
 }
 struct ToneBandVerdict:Codable,Identifiable {
     var id:Int;var name:String;var range:String;var value:Double?;var median:Double?;var lower:Double?;var upper:Double?;var delta:Double?;var status:String;var attention:Bool
@@ -98,7 +103,7 @@ struct ToneAssessment:Codable {
     var genre:String;var mode:String;var referenceCount:Int;var referenceTitles:[String];var summary:ToneSummary;var bands:[ToneBandVerdict];var advice:[ToneAdvice];var conclusion:String;var limitation:String
 }
 func assessTone(_ slices:[ToneSlice],genre:String,hash:String,loud:Bool=false,quiet:Bool=false,library:ToneLibrary = .shared)->ToneAssessment {
-    let summary=summarizeTone(slices,loud:loud)
+    let summary=summarizeTone(slices,loud:loud,quiet:quiet)
     let refs=library.references.filter{$0.genre==genre && !$0.hashes.contains(hash)}
     let targets=refs.map{loud ? $0.loud:(quiet ? $0.quiet:$0.active)},enough=targets.count>=5 && summary.seconds>=8
     let assessedBands=sevenToneBands(summary.bands),targetBands=targets.map{sevenToneBands($0.bands)}
@@ -121,12 +126,13 @@ func assessTone(_ slices:[ToneSlice],genre:String,hash:String,loud:Bool=false,qu
         }
         bands.append(ToneBandVerdict(id:b,name:toneNames[b],range:toneRanges[b],value:v,median:med,lower:lo,upper:hi,delta:delta,status:status,attention:attention))
     }
-    let active=usableSlices(slices,loud:loud)
+    let active=usableSlices(slices,loud:loud,quiet:quiet)
+    // Compute each slice shape at most once across all requested markers.
+    var markerShapes:[[Double?]]?
     func marker(_ indices:[Int],high:Bool)->Double? {
-        active.max{a,b in
-            func value(_ s:ToneSlice)->Double {let shape=sevenToneBands(summarizeTone([s]).bands);return indices.reduce(0.0){$0+(shape[$1] ?? -100)}}
-            return high ? value(a)<value(b):value(a)>value(b)
-        }?.start
+        if markerShapes == nil {markerShapes=active.map{sevenToneBands(summarizeTone([$0]).bands)}}
+        let values=markerShapes!.map{shape in indices.reduce(0.0){$0+(shape[$1] ?? -100)}}
+        return active.indices.max{high ? values[$0]<values[$1]:values[$0]>values[$1]}.map{active[$0].start}
     }
     if enough {
         // Low/rest ratio avoids saturation of percentages near 100% bass energy.
@@ -136,7 +142,7 @@ func assessTone(_ slices:[ToneSlice],genre:String,hash:String,loud:Bool=false,qu
         if let fraction=summary.lowRatio,let top=lowTop,lowRest(fraction)>top+3 {
             let low=lowRest(fraction)
             let sustained=(summary.lowContrast ?? 100)<(contrastBottom ?? -100)-1
-            advice.append(ToneAdvice(id:"bass",title:sustained ? "Prominent én gelijkmatig laag":"Laag staat duidelijk vooraan",evidence:"20–120 Hz ligt \(display(low-(quantile(lowTargets,0.5) ?? low))) dB boven de referentiemediaan ten opzichte van 120 Hz–10 kHz."+(sustained ? " De laag-envelop heeft ook minder contrast binnen de meetvensters.":" Veel laag is niet vanzelf een probleem."),action:sustained ? "Luister of basstaarten de volgende kick verhullen. Vergelijk sustain en basniveau vóór een brede master-EQ-cut. Dit bewijst geen masking of te veel compressie.":"Vergelijk op gelijk luisterniveau of kick en bas prominent mogen zijn, of de middenpartijen naar achteren drukken. Probeer eerst een kleine aanpassing en A/B; geen verplichte basreductie.",start:marker([0,1],high:true)))
+            advice.append(ToneAdvice(id:"bass",title:sustained ? "Prominent én gelijkmatig laag":"Laag staat duidelijk vooraan",evidence:"20–120 Hz ligt \(display(low-(quantile(lowTargets,0.5) ?? low))) dB boven de referentiemediaan ten opzichte van 120 Hz–10 kHz."+(sustained ? " De laag-envelop heeft ook minder contrast binnen de meetvensters.":" Veel laag is niet vanzelf een probleem."),action:sustained ? "Luister of het prominente laag de overige partijen hoorbaar bedekt. Vergelijk basniveau en sustain vóór een brede master-EQ-cut. De meetvensters isoleren geen kick of basstaart en bewijzen geen masking of compressie.":"Vergelijk op gelijk luisterniveau of kick en bas prominent mogen zijn, of de middenpartijen naar achteren drukken. Probeer eerst een kleine aanpassing en A/B; geen verplichte basreductie.",start:marker([0,1],high:true)))
         } else if let low=summary.lowRatio,let bottom=lowBottom,lowRest(low)<bottom-3 {
             advice.append(ToneAdvice(id:"bass-light",title:"Lichter fundament dan de referenties",evidence:"20–120 Hz is relatief minder aanwezig dan in de meeste gekozen voorbeelden.",action:"Controleer de volle passage. Bij een arrangement zonder bas is dit logisch. Alleen als een stevig fundament de bedoeling is: vergelijk basnoten, kickgewicht en sustain; niet blind sub toevoegen.",start:marker([0,1],high:false)))
         }
@@ -155,10 +161,10 @@ func assessTone(_ slices:[ToneSlice],genre:String,hash:String,loud:Bool=false,qu
     if summary.seconds>=8,let mono=summary.lowMono,mono < -6,let low=summary.lowRatio,low > -25 {
         advice.insert(ToneAdvice(id:"low-mono",title:"Laag verliest energie in mono",evidence:"20–120 Hz: \(display(mono)) dB volgens 2E(mono)/(E(L)+E(R)).",action:"Controleer of het fundament op een monosysteem overeind blijft. Onderzoek polariteit of stereoverbreding van het laag. Deze verhouding is geen voorspelling van elk luidsprekersysteem.",start:active.min{($0.lowMono ?? 0)<($1.lowMono ?? 0)}?.start),at:0)
     }
-    let conclusion = summary.seconds<8 ? "Te weinig actieve audio voor een toonbalansoordeel." : (!enough ? "Kies een genre met minimaal vijf onafhankelijke referenties." : (bands.contains{$0.attention} || !advice.isEmpty ? "Er zijn klankverschillen om gericht te beluisteren; geen automatische afkeur." : "Geen duidelijke tonale uitschieter tegenover deze referenties. Dat is geen volledige kwaliteitsgoedkeuring."))
+    let conclusion = library.loadIssue ?? (summary.seconds<8 ? "Te weinig actieve audio voor een toonbalansoordeel." : (!enough ? "Kies een genre met minimaal vijf onafhankelijke referenties." : (bands.contains{$0.attention} || !advice.isEmpty ? "Er zijn klankverschillen om gericht te beluisteren; geen automatische afkeur." : "Geen duidelijke tonale uitschieter tegenover deze referenties. Dat is geen volledige kwaliteitsgoedkeuring.")))
     return ToneAssessment(genre:genre,mode:loud ? "Luidere passages":(quiet ? "Rustigere referentiepassages":"Actieve muziek"),referenceCount:refs.count,referenceTitles:refs.map{$0.title},summary:summary,bands:bands,advice:advice,conclusion:conclusion,limitation:"Voorlopige pilotbibliotheek; geen universele genre-norm. Bandenergie relatief aan 20 Hz–10 kHz, niet een voorgeschreven EQ-curve. Air is beschrijvend vanwege lossy bronnen. Envelopcontrast is geen meting van compressorinstellingen of hoorbare masking.")
 }
-struct FeatureDocument:Codable {var source:String;var sha256:String;var sampleRate:Double;var duration:Double;var slices:[ToneSlice];var active:ToneSummary;var loud:ToneSummary;var quiet:ToneSummary;var sections:[ArrangementSection]}
+struct FeatureDocument:Codable {var source:String;var sha256:String;var sampleRate:Double;var duration:Double;var slices:[ToneSlice];var active:ToneSummary;var loud:ToneSummary;var quiet:ToneSummary;var sections:[ArrangementSection];var referenceIdentity:ReferenceIdentity? = nil}
 func analyzeFeatures(_ url:URL)throws->FeatureDocument {
     let hash=try sha256(url),file=try AudioInput(url),format=file.format!,rate=format.sampleRate,ch=Int(format.channelCount)
     guard let q=qct_create(Int32(rate),Int32(ch),file.length) else{throw QCFailure(message:"Ongeldig formaat voor toonbalans.")};defer{qct_destroy(q)}
@@ -167,5 +173,5 @@ func analyzeFeatures(_ url:URL)throws->FeatureDocument {
     while frames<file.length{try file.read(into:buffer,frameCount:AVAudioFrameCount(min(8192,file.length-frames)));guard buffer.frameLength>0,qct_push(q,buffer.floatChannelData![0],Int32(buffer.frameLength))==0 else{throw QCFailure(message:"Onvolledige of ongeldige audio.")};frames+=Int64(buffer.frameLength)}
     try file.finish(atEnd:true)
     let slices=extractSlices(q),duration=Double(frames)/rate
-    return FeatureDocument(source:url.path,sha256:hash,sampleRate:rate,duration:duration,slices:slices,active:summarizeTone(slices),loud:summarizeTone(slices,loud:true),quiet:summarizeTone(slices,quiet:true),sections:arrangement(slices,duration:duration))
+    return FeatureDocument(source:url.path,sha256:hash,sampleRate:rate,duration:duration,slices:slices,active:summarizeTone(slices),loud:summarizeTone(slices,loud:true),quiet:summarizeTone(slices,quiet:true),sections:arrangement(slices,duration:duration),referenceIdentity:ReferenceIdentities.shared.resolve(hash:hash,duration:duration,slices:slices))
 }

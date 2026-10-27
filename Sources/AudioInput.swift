@@ -2,14 +2,15 @@ import Foundation
 import AVFoundation
 
 // Owned by an analysis result. Float PCM cache is removed on replacement, cancellation or failure.
-final class DecodedAudio: Encodable {
+final class DecodedAudio: Encodable, Sendable {
     let directory: URL
     var url: URL { directory.appendingPathComponent("preview.caf") }
     init() throws {
-        directory=FileManager.default.temporaryDirectory.appendingPathComponent("ya-mixcheck-decode-\(UUID().uuidString)")
+        directory=SnapshotStorage.temporaryDirectory.appendingPathComponent("ya-mixcheck-decode-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:false,attributes:[.posixPermissions:0o700])
+        do {try SnapshotStorage.register(directory)} catch {try? FileManager.default.removeItem(at:directory);throw error}
     }
-    func remove(){try? FileManager.default.removeItem(at:directory)}
+    func remove(){SnapshotStorage.remove(directory)}
     deinit {remove()}
     func encode(to encoder: Encoder) throws {var c=encoder.singleValueContainer();try c.encode("temporary float32 PCM; same decode for measurement and playback")}
 }
@@ -52,7 +53,7 @@ final class AudioInput {
             }
         }
     }
-    deinit {if let mp3 {qc_mp3_close(mp3)};if let flac {qc_flac_close(flac)}}
+    deinit {closeAudioWriter(&writer);if let mp3 {qc_mp3_close(mp3)};if let flac {qc_flac_close(flac)}}
     func preparePreview() throws {
         guard mp3 != nil || flac != nil else{return}
         let cache=try DecodedAudio();decoded=cache
@@ -77,6 +78,7 @@ final class AudioInput {
         else {native!.framePosition=frame}
     }
     func finish(atEnd:Bool=true) throws {
+        defer{closeAudioWriter(&writer)}
         if atEnd, let mp3 {
             var tail=[Float](repeating:0,count:2)
             guard qc_mp3_read(mp3,&tail,1)==0 else{throw QCFailure(message:"MP3-frametelling wijkt af; geen volledig rapport beschikbaar.")}
@@ -85,6 +87,20 @@ final class AudioInput {
             var tail=[Float](repeating:0,count:2)
             guard qc_flac_read(flac,&tail,1)==0 else{throw QCFailure(message:"FLAC-frametelling wijkt af.")}
         }
-        writer=nil
+        closeAudioWriter(&writer)
+        if let decoded {
+            let finalized=try AVAudioFile(forReading:decoded.url)
+            guard finalized.length==length,finalized.processingFormat.sampleRate==format.sampleRate,
+                  finalized.processingFormat.channelCount==format.channelCount else {
+                throw QCFailure(message:"Tijdelijke decode is onvolledig; afspelen geblokkeerd.")
+            }
+        }
     }
+}
+
+// AVAudioFile has no finishWriting(). macOS 15 exposes close(); on older systems
+// release the sole reference. Do this before publishing/reopening a PCM artifact.
+func closeAudioWriter(_ writer:inout AVAudioFile?) {
+    if #available(macOS 15.0, *) {writer?.close()}
+    writer=nil
 }

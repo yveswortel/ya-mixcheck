@@ -67,7 +67,7 @@ func validateIntegrity() throws -> [TestOutcome] {
         let json=try JSONSerialization.jsonObject(with:measured.json()) as! [String:Any]
         let status=json["measurementStatus"] as! [String:String]
         let interpolated=rate==176400
-        check("\(rate) interpolation value/status/JSON/advice aligned",(json["truePeakInterpolationFactor"] as? Int)==(interpolated ? 2:1) && status["truePeakEstimate"]==(interpolated ? "provisional_interpolated_estimate":"sample_peak_only_no_interpolation") && measured.secondOpinion(purpose:"Release/master").contains{$0.id=="truepeak"}==(interpolated && measured.truePeakEstimate!>1) && (interpolated ? measured.truePeakEstimate!>measured.samplePeak!+2:abs(measured.truePeakEstimate!-measured.samplePeak!)<1e-6))
+        check("\(rate) interpolation value/status/JSON/advice aligned",(json["truePeakInterpolationFactor"] as? Int)==(interpolated ? 2:1) && status["truePeakEstimate"]==(interpolated ? "interpolated_estimate":"not_measured_no_interpolation") && measured.secondOpinion(purpose:"Release/master").contains{$0.id=="truepeak"}==(interpolated && measured.truePeakEstimate!>1) && (interpolated ? measured.truePeakEstimate!>measured.samplePeak!+2:abs(measured.truePeakEstimate!-measured.samplePeak!)<1e-6))
     }
     let left=dir.appendingPathComponent("left-only.wav")
     let l=(0..<48000).flatMap{n in [Float(0.2*sin(2*Double.pi*440*Double(n)/48000)),Float(0)]}

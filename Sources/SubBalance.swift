@@ -1,6 +1,6 @@
 import Foundation
 
-struct SubSlice:Codable {var start:Double;var duration:Double;var sub:Double;var rest:Double}
+struct SubSlice:Codable, Sendable {var start:Double;var duration:Double;var sub:Double;var rest:Double}
 struct SubEvent:Codable {var start:Double;var end:Double;var dominance:Double;var excess:Double}
 // RBJ Butterworth sections. Independent channel energies: no cancellation from stereo summing.
 private struct SubFilter {

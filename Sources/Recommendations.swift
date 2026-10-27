@@ -1,6 +1,6 @@
 import Foundation
 struct MixRecommendation:Codable,Identifiable {
-    var id:String;var title:String;var evidence:String;var action:String;var start:Double? = nil
+    var id:String;var title:String;var evidence:String;var action:String;var start:Double? = nil;var scope:String? = nil;var supportFraction:Double? = nil;var contrast:Double? = nil
 }
 // Suggestions, not diagnoses. Relative energy can move because another band changed.
 let toneSuggestions:[(low:String,high:String)] = [
@@ -37,17 +37,29 @@ func dynamicsRecommendations(_ d:TrackDynamics)->[MixRecommendation] {
     }
 }
 func mixRecommendations(_ a:Analysis,genre:String,purpose:String)->[MixRecommendation] {
+    mixRecommendations(RecommendationAnalysis(a,genre:genre),purpose:purpose)
+}
+func mixRecommendations(_ context:RecommendationAnalysis,purpose:String)->[MixRecommendation] {
+    let a=context.analysis
     var items=a.secondOpinion(purpose:purpose).filter{
         $0.category != "Context, geen fout" && !($0.id=="overrange" && a.codec.hasPrefix("MP3") && (a.samplePeak ?? 0)<=1)
-    }.map{MixRecommendation(id:"technical-"+$0.id,title:$0.title,evidence:$0.evidence,action:$0.action)}
+    }.map{MixRecommendation(id:"technical-"+$0.id,title:$0.title,evidence:$0.evidence,action:$0.action,start:$0.startFrame.map{Double($0)/a.sampleRate},scope:$0.startFrame == nil ? "Trackcontext":"Lokaal")}
     let stereo=a.stereoAssessment
     if !items.contains(where:{$0.id=="technical-mono"}),let m=stereo["monoEnergy"],let c=stereo["correlation"],m.level == .orange || c.level == .orange {
         items.append(MixRecommendation(id:"stereo",title:"Stereo · beluister ook mono",evidence:"De mono-energie of correlatie vraagt een luistercontrole; breedte kan bewust zijn.",action:"Blijven zang, kick en bas overeind in mono? Controleer wideners en polariteit als belangrijke partijen verdwijnen. Maak het beeld niet smaller alleen om een meter groener te krijgen."))
     }
     if let sub=localSubRecommendation(a){items.append(sub)}
-    let sections=arrangement(a.toneSlices,duration:a.duration)
-    items += contextualRecommendations(tone:assessTone(a.toneSlices,genre:genre,hash:a.sha256),d:trackDynamics(a,genre:genre),passages:passageDynamics(a,sections:sections,genre:genre),purpose:purpose)
-    return Array(items.prefix(3))
+    items += temporalRecommendations(context,purpose:purpose)
+    // Lowest priority: a level preference must never displace technical or tonal advice.
+    if let level=a.loudnessReview(purpose:purpose,dynamics:context.dynamics).advice {items.append(level)}
+    let fallback=representativeActiveStart(a.toneSlices)
+    for i in items.indices {
+        if items[i].start == nil {items[i].start=fallback;items[i].scope=items[i].scope ?? "Trackcontext"}
+        else if items[i].scope == nil {items[i].scope="Lokaal"}
+    }
+    var seen=Set<String>()
+    // One slot per pattern: opposing local directions must not duplicate SwiftUI IDs.
+    return Array(items.filter{seen.insert($0.id).inserted}.prefix(3))
 }
 
 // Joint patterns are listening hypotheses, not instrument or compressor identification.

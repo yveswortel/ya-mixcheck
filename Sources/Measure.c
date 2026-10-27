@@ -55,14 +55,14 @@ QC* qc_create(int rate,int ch,int64_t expected) {
  if(ch<1||ch>2||rate<44100||rate>192000||expected<=0)return NULL;
  QC* q=calloc(1,sizeof(*q));if(!q)return NULL;
  q->rate=rate;q->ch=ch;q->expected=expected;q->hop=rate/100;
- q->n=1;while(q->n<rate/10.0)q->n*=2;q->fftHop=q->n/4;
+ q->n=1;while(q->n<rate*2.0)q->n*=2;q->fftHop=q->n/4;
  for(int i=0;i<QC_METRICS;i++)q->out[i]=NAN;
  q->open[0]=q->open[1]=-1; q->flatOpen[0]=q->flatOpen[1]=-1;
  q->loud=ebur128_init(ch,rate,EBUR128_MODE_I|EBUR128_MODE_S);
  q->peak=ebur128_init(ch,rate,EBUR128_MODE_TRUE_PEAK);
  q->ring=calloc(q->n*ch,sizeof(double));q->win=calloc(q->n,sizeof(double));q->re=calloc(q->n,sizeof(double));q->im=calloc(q->n,sizeof(double));
  if(!q->loud||!q->peak||!q->ring||!q->win||!q->re||!q->im){qc_destroy(q);return NULL;}
- for(int i=0;i<q->n;i++){q->win[i]=0.5-0.5*cos(2*M_PI*i/q->n);q->windowEnergy+=q->win[i]*q->win[i];}
+ for(int i=0;i<q->n;i++){q->win[i]=0.35875-0.48829*cos(2*M_PI*i/q->n)+0.14128*cos(4*M_PI*i/q->n)-0.01168*cos(6*M_PI*i/q->n);q->windowEnergy+=q->win[i]*q->win[i];}
  return q;
 }
 void qc_destroy(QC* q){if(!q)return;if(q->loud)ebur128_destroy(&q->loud);if(q->peak)ebur128_destroy(&q->peak);free(q->ring);free(q->win);free(q->re);free(q->im);free(q->shorts);free(q);}

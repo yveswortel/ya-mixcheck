@@ -16,6 +16,17 @@ func validateNewChecks() throws->[TestOutcome] {
         check("\(rate): anomaly chunk invariance",a.map{"\($0.kind):\($0.startFrame):\($0.endFrame):\($0.channel)"}==b.map{"\($0.kind):\($0.startFrame):\($0.endFrame):\($0.channel)"})
         var gap=tone;for i in rate..<rate+rate/10{gap[i]=0}
         check("\(rate): internal 100ms dropout",detect(gap,rate:rate).contains{$0.kind=="silence"})
+        for ms in [1,5,15] {
+            var short=tone;let start=rate+37
+            for i in start..<start+rate*ms/1000{short[i]=0}
+            let events=detect(short,rate:rate,chunk:127)
+            check("\(rate): internal \(ms)ms digital dropout",events.contains{$0.kind=="silence" && $0.startFrame==start})
+        }
+        var step=tone.map{$0*0.001}
+        for i in rate..<step.count {step[i]+=0.01}
+        check("\(rate): quiet splice step candidate",detect(step,rate:rate).contains{$0.kind=="click" && $0.startFrame==rate})
+        var quietClick=tone.map{$0*0.001};quietClick[rate]+=0.01
+        check("\(rate): -40dB impulse candidate",detect(quietClick,rate:rate).contains{$0.kind=="click" && $0.startFrame==rate})
         var tail=tone;for i in rate..<rate*2{tail[i]=0}
         check("\(rate): trailing silence not a dropout",!detect(tail,rate:rate).contains{$0.kind=="silence"})
         var fade=tone;for i in rate/2..<rate{fade[i]*=Float(rate-i)/Float(rate/2)};for i in rate..<rate*2{fade[i]=0}

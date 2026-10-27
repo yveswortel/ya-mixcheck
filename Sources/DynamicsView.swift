@@ -10,18 +10,28 @@ struct ListeningPanel:View {
                 Text("Advies voor jouw mix").font(.title3.bold())
                 Spacer()
                 Button("Onderbouwing…"){showEvidence=true}
-                    .help("Bekijk de meetbasis, beperkingen en luistermomenten bij de adviezen")
+                    .help("Bekijk de meetbasis en beperkingen bij de adviezen")
             }
             Text("\(s.genre) · hele track. Luister op gelijk niveau en behoud bewuste keuzes.")
                 .font(.caption).foregroundStyle(.secondary)
-            if advice.isEmpty {
+            if s.engineerComputing {Text("Adviezen berekenen…").font(.callout).foregroundStyle(.secondary)}
+            if let issue=ToneLibrary.shared.loadIssue {Text(issue).font(.caption).foregroundStyle(.orange)}
+            if let issue=DynamicsLibrary.shared.loadIssue {Text(issue).font(.caption).foregroundStyle(.orange)}
+            if advice.isEmpty && !s.engineerComputing {
                 Text("Geen duidelijke aanleiding voor een aanpassing uit de beschikbare metingen. Vergelijk vooral balans, groove en luistercomfort met je referentie; dit is geen kwaliteitsgoedkeuring.").font(.callout)
             }
             ForEach(advice){a in
                 VStack(alignment:.leading,spacing:5){
                     Text(a.title).font(.system(size:14,weight:.semibold))
+                    if let scope=a.scope {Text(scope).font(.caption).foregroundStyle(.secondary)}
                     Text(a.action).font(.system(size:13)).lineSpacing(3)
                         .fixedSize(horizontal:false,vertical:true)
+                    if ["technical-click","technical-silence"].contains(a.id),let start=a.start {
+                        Button(String(format:"Controleer %@ bij %d:%02d",a.id=="technical-click" ? "klik":"stilte",Int(start)/60,Int(start)%60)) {
+                            s.listenToAnomaly(at:start)
+                        }.buttonStyle(.bordered).controlSize(.regular).padding(.top,5)
+                            .help("Speel het origineel af vanaf één seconde vóór de markering, zonder EQ-preview.")
+                    }
                 }.frame(maxWidth:760,alignment:.leading)
             }
         }.padding(20).frame(maxWidth:.infinity,alignment:.leading)
@@ -41,31 +51,9 @@ struct ListeningPanel:View {
                                 VStack(alignment:.leading,spacing:6){
                                     Text(a.title).font(.headline)
                                     Text(a.evidence).textSelection(.enabled)
-                                    if let start=a.start {
-                                        Button(String(format:"Ga naar %d:%02d",Int(start)/60,Int(start)%60)) {
-                                            showEvidence=false;s.stop();s.usingReference=false;s.comparisonMode="Hele nummer";s.seek(start)
-                                        }
-                                    }
                                 }
                             }
-                            VStack(alignment:.leading,spacing:6){
-                                Text("Wat de metingen niet bepalen").font(.headline)
-                                Text("LUFS, LRA, PLR en crest zijn geen kwaliteitsdoelen. Vergelijk passende muziek op gelijk luisterniveau. Stem headroom en eindlimiting af op de mastering. Veel laag is niet automatisch mud; Air is codecgevoelig. Een smal stereobeeld hoeft niet breder. De adviezen zijn luisterhypotheses, geen bewezen oorzaken of verplichte correcties.")
-                            }
-                            if !s.listeningReview.isEmpty {
-                                VStack(alignment:.leading,spacing:10){
-                                    Text("Luistermomenten").font(.headline)
-                                    ForEach(s.listeningReview){a in
-                                        HStack(alignment:.top){
-                                            Text(a.listen)
-                                            Spacer()
-                                            Button(String(format:"Ga naar %d:%02d",Int(a.start)/60,Int(a.start)%60)){
-                                                showEvidence=false;s.stop();s.usingReference=false;s.comparisonMode="Hele nummer";s.seek(a.start)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+
                         }.font(.system(size:13)).lineSpacing(3).frame(maxWidth:.infinity,alignment:.leading).padding(.trailing,8)
                     }
                 }.padding(24).frame(width:620,height:540)
@@ -78,6 +66,8 @@ struct DynamicsPanel:View {
     var body:some View {
         VStack(alignment:.leading,spacing:12){
             Text("Dynamics · hele track").font(.title3.bold())
+            if let issue=DynamicsLibrary.shared.loadIssue {Text(issue).font(.caption).foregroundStyle(.orange)}
+            if s.engineerComputing {Text("Dynamics berekenen…").font(.caption).foregroundStyle(.secondary)}
             if let d=s.dynamicsReview {
                 VStack(alignment:.leading,spacing:14){
                     Text("Actieve muziek · \(d.referenceCount) genrevoorbeelden")
@@ -85,10 +75,7 @@ struct DynamicsPanel:View {
                     VStack(spacing:20){
                         ForEach(d.metrics){m in DynamicsMeter(metric:m)}
                     }.padding(16).background(.white.opacity(0.025),in:RoundedRectangle(cornerRadius:8))
-                    HelpButton("Dynamics-uitleg"){
-                        Text("Eén overzicht over de hele track; stilte en zeer zachte delen tellen niet mee. Dichtheid: typische piek/RMS-afstand op 1 seconde; dichter bij nul = dichter. Punch: snelle envelopaanzet tegenover circa 100 ms ervoor. Beweging: spreiding van 1-s-energieniveaus over de track, inclusief arrangementverschillen. Geen bewijs van overcompressie. Minimaal 8 actieve seconden. Referenties P10–P90, één gewicht per track; kleine pilotbibliotheek, deels MP3. Meer dichtheid of punch is niet automatisch beter.")
-                            .font(.caption).foregroundStyle(.secondary)
-                    }
+
                 }.padding(.top,10)
             }
         }

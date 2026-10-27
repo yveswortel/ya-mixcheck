@@ -13,15 +13,23 @@ func display(_ x: Double?, _ digits: Int = 1) -> String { x.map { String(format:
 func sha256(_ url: URL, cancellation: Cancellation = Cancellation()) throws -> String {
     let h = try FileHandle(forReadingFrom: url); defer { try? h.close() }
     var hash = SHA256()
-    while true { try cancellation.check(); let d = try h.read(upToCount: 1 << 20) ?? Data(); if d.isEmpty { break }; hash.update(data: d) }
+    // FileHandle bridges autoreleased NSData. Drain every chunk so hashing a
+    // long file never retains its entire byte stream until the worker finishes.
+    while try autoreleasepool(invoking: { () throws -> Bool in
+        try cancellation.check()
+        let d = try h.read(upToCount: 1 << 20) ?? Data()
+        guard !d.isEmpty else { return false }
+        hash.update(data: d)
+        return true
+    }) {}
     return hash.finalize().map { String(format: "%02x", $0) }.joined()
 }
-struct Incident: Codable, Identifiable {
+struct Incident: Codable, Identifiable, Sendable {
     var id: Int; var startFrame: Int64; var endFrame: Int64; var channel: Int
 }
-struct SpectrumPoint: Codable { var hz: Double; var db: Double? }
-struct Analysis: Encodable {
-    var schema = 10; var engine = "YA-MixCheck 0.4.13 / libebur128 1.2.6"
+struct SpectrumPoint: Codable, Sendable { var hz: Double; var db: Double? }
+struct Analysis: Encodable, Sendable {
+    var schema = 13; var appVersion = "1.0.0"; var engine = "YA-MixCheck reference-identity-20261020 / libebur128 1.2.6"
     var source: String; var sha256: String; var modifiedAt: Date; var byteCount: Int64; var sampleRate: Double; var channels: Int; var frames: Int64
     var bitDepth: Int; var floatingPoint: Bool; var duration: Double { Double(frames) / sampleRate }
     var integrated: Double?; var momentaryMax: Double?; var shortTermMax: Double?; var lra: Double?
@@ -40,10 +48,15 @@ struct Analysis: Encodable {
     var subSlices:[SubSlice] = []
     var anomalies:[AudioAnomaly] = []
     var anomalyCount:Int = 0
+    var inputSnapshot:PreparedInput? = nil
+    var originalSource:String? = nil
+    var referenceIdentity:ReferenceIdentity? = nil
+    var assessmentHash:String {referenceIdentity?.hash ?? sha256}
     var decodedAudio: DecodedAudio? = nil
     var playbackURL: URL { decodedAudio?.url ?? url }
     var url: URL { URL(fileURLWithPath: source) }
     func sourceIsUnchanged() -> Bool {
+        if let snapshot=inputSnapshot{return snapshot.snapshotIsIntact() && snapshot.originalIsUnchanged()}
         guard let attrs=try? FileManager.default.attributesOfItem(atPath:source) else { return false }
         return (attrs[.modificationDate] as? Date)==modifiedAt && (attrs[.size] as? NSNumber)?.int64Value==byteCount
     }
@@ -53,26 +66,38 @@ struct Analysis: Encodable {
         var object=try JSONSerialization.jsonObject(with:e.encode(self)) as! [String:Any]
         let optionalKeys=["integrated","momentaryMax","shortTermMax","lra","truePeakEstimate","samplePeak","plr","correlation","monoLoss"]
         for key in optionalKeys where object[key]==nil { object[key]=NSNull() }
+        object["referenceLibraries"]=["toneVersion":ToneLibrary.shared.version,"dynamicsVersion":DynamicsLibrary.shared.version,"toneIssue":ToneLibrary.shared.loadIssue ?? "","dynamicsIssue":DynamicsLibrary.shared.loadIssue ?? ""]
+        object["spectrumMethod"]="v2: >=2s power-of-two Blackman-Harris window, 75% overlap; fractional-bin energy; finite resolution near boundaries. Shorter audio has no spectrum."
         object["adviceContext"]=["purpose":purpose,"genre":genre,"policy":"Genre uses pilot reference distributions; not a quality score or universal target."]
         object["channelBalanceDB"]=channelBalanceDB.map { $0 as Any } ?? NSNull()
         object["channelBalanceConvention"]="RMS L minus RMS R in dB; positive = left stronger. Missing/silent channel represented in channelBalance verdict, not infinity in JSON."
-        object["truePeakInterpolationFactor"]=sampleRate<96000 ? 4:(sampleRate<192000 ? 2:1)
+        object["truePeakInterpolationFactor"]=truePeakInterpolationFactor
+        // Schema 13: never export a sample-only value under a true-peak/PLR key.
+        object["truePeakEstimate"]=peakIsInterpolated ? (truePeakEstimate as Any? ?? NSNull()):NSNull()
+        object["plr"]=peakIsInterpolated ? (reportedPeakGap as Any? ?? NSNull()):NSNull()
+        object["samplePeakToLoudness"]=samplePeak.flatMap{p in integrated.map{p-$0}} as Any? ?? NSNull()
+        object["measurementClaims"]=try JSONSerialization.jsonObject(with:e.encode(measurementClaims))
+        object["validationEvidence"]=validationEvidence
         object["stereoAssessment"]=try JSONSerialization.jsonObject(with:e.encode(stereoAssessment))
         object["secondOpinion"]=try JSONSerialization.jsonObject(with:e.encode(secondOpinion(purpose:purpose)))
-        object["tonalAssessment"]=try JSONSerialization.jsonObject(with:e.encode(assessTone(toneSlices,genre:genre,hash:sha256)))
-        object["louderPassageAssessment"]=try JSONSerialization.jsonObject(with:e.encode(assessTone(toneSlices,genre:genre,hash:sha256,loud:true)))
-        object["arrangement"]=try JSONSerialization.jsonObject(with:e.encode(arrangement(toneSlices,duration:duration,manual:manualBounds)))
-        let sections=arrangement(toneSlices,duration:duration,manual:manualBounds)
-        object["trackDynamics"]=try JSONSerialization.jsonObject(with:e.encode(trackDynamics(self,genre:genre)))
-        object["passageDynamics"]=try JSONSerialization.jsonObject(with:e.encode(passageDynamics(self,sections:sections,genre:genre)))
-        object["mixRecommendations"]=try JSONSerialization.jsonObject(with:e.encode(mixRecommendations(self,genre:genre,purpose:purpose)))
-        object["listeningAdvice"]=try JSONSerialization.jsonObject(with:e.encode(listeningAdvice(self,sections:sections,genre:genre,purpose:purpose)))
+        let context=RecommendationAnalysis(self,genre:genre)
+        object["loudnessAssessment"]=try JSONSerialization.jsonObject(with:e.encode(loudnessReview(purpose:purpose,dynamics:context.dynamics)))
+        object["tonalAssessment"]=try JSONSerialization.jsonObject(with:e.encode(context.tone))
+        object["louderPassageAssessment"]=try JSONSerialization.jsonObject(with:e.encode(assessTone(toneSlices,genre:genre,hash:assessmentHash,loud:true)))
+        let sections=manualBounds == nil ? context.sections:arrangement(toneSlices,duration:duration,manual:manualBounds)
+        let passageContext=manualBounds == nil ? context:RecommendationAnalysis(self,genre:genre,sections:sections)
+        object["arrangement"]=try JSONSerialization.jsonObject(with:e.encode(sections))
+        object["trackDynamics"]=try JSONSerialization.jsonObject(with:e.encode(context.dynamics))
+        object["passageDynamics"]=try JSONSerialization.jsonObject(with:e.encode(passageContext.passages))
+        object["mixRecommendations"]=try JSONSerialization.jsonObject(with:e.encode(mixRecommendations(context,purpose:purpose)))
+        object["listeningAdvice"]=try JSONSerialization.jsonObject(with:e.encode(listeningAdvice(passageContext,purpose:purpose)))
         object["dynamicsMethod"]="v1: density=median negative 1s sample crest; punch=P90 maximum positive 10ms energy/preceding 100ms EMA per 100ms; movement=P90-P10 one-second energy levels. Active gate max(-70,P90 RMS-20); minimum eight active seconds. Descriptive, not compressor detection or quality scores."
         object["localSubEvents"]=try JSONSerialization.jsonObject(with:e.encode(localSubEvents(subSlices)))
         object["localSubMethod"]="v1: 100ms channel-energy, second-order HP20/LP80 vs HP120. Outlier requires dominance >3dB, >6dB above neighboring P90 ratio, sub >3dB above neighboring P90, rest within 6dB of median. +/-5s neighborhood excludes +/-0.5s. At least 40 active neighbors and 0.2s event. Listening candidates, no defect diagnosis."
         object["arrangementEdited"]=manualBounds != nil
         object["toneBandLayout"]=["assessment":"Sub 20–60, Bass 60–120, Low-mid 120–250, Body 250–500, Mids 500–2000, High 2000–10000, Air 10000–20000 Hz", "rawSlicesAndSummary":"Eight original bins; High is the linear-energy sum of raw bins 5 and 6 before per-track quantiles."]
-        object["measurementStatus"]=["integrated":integrated==nil ? "insufficient_or_below_gate":"experimental_not_conformance_tested", "lra":lra==nil ? "insufficient_or_below_gate":(duration<60 ? "short_program_provisional":"provisional_boundary_policy"), "truePeakEstimate":sampleRate>=192000 ? "sample_peak_only_no_interpolation":"provisional_interpolated_estimate", "monoLoss":completeMonoCancellation ? "complete_cancellation":(monoLoss==nil ? "mono_or_insufficient_energy":"measured")]
+        object["measurementStatus"]=measurementStatuses
+        object["validationScope"]=MeasurementClaims.suite+" "+meterValidationNote
         return try JSONSerialization.data(withJSONObject:object,options:[.prettyPrinted,.sortedKeys])
     }
 }
@@ -125,14 +150,10 @@ final class Analyzer {
         let after = try FileManager.default.attributesOfItem(atPath: url.path)
         guard (before[.size] as? NSNumber) == (after[.size] as? NSNumber), (before[.modificationDate] as? Date) == (after[.modificationDate] as? Date) else { throw QCFailure(message: "Het bronbestand veranderde tijdens de analyse. Analyseer de nieuwe versie opnieuw.") }
         func metric(_ i: Int32) -> Double? { finite(qc_value(q, i)) }
-        var issues = ["Ontwikkelversie: officiële EBU/ITU-conformancetests nog niet uitgevoerd.",
-                      "True peak is een voorlopige libebur128-schatting; bij 192 kHz gebruikt deze versie samplepeak zonder interpolatie.",
-                      "Spectrum: gemiddelde energie van volledige Hann-vensters; begin/einde zijn gewogen en de laatste onvolledige hop is uitgesloten. Genreanalyse gebruikt afzonderlijke 2-s-kenmerken en voorlopige referentieverdelingen.",
-                      "Clippingbewijs is heuristisch: exacte plateaus ≥3 samples bij |x|≥0,8, plus zachtere lokale plateaus met twee opgeloste flanken en PCM-railbezetting (8–24 bit). Geen hoorbaarheidsclaim, mud-classifier of kwaliteitscijfer."]
+        var issues = MeasurementClaims.standardLimitations
         if let note=file.gaplessNote {issues.append(note);issues.append("MP3-pieken horen bij de float-decode, niet noodzakelijk bij het signaal vóór encoding. Tijdelijke float-PCM-cache voor identieke playback.")}
         if !railsAvailable {issues.append("PCM-railtest niet beschikbaar voor float, lossy of onbekende/>24-bit bron; plateaucontrole blijft actief.")}
         if measuredFrames < Int64(rate*60) { issues.append("LRA: minder dan 60 seconden materiaal; interpretatie beperkt.") }
-        issues.append("LRA gebruikt volledige 3-s-vensters op 10 Hz, nearest-rank-index round((n−1)p), zonder eindpadding; randbeleid nog niet normgevalideerd.")
         let spec = (0..<Int(QC_BANDS)).map { i -> SpectrumPoint in let p = qc_spectrum(q)![i]; return SpectrumPoint(hz: qc_frequency(Int32(i)), db: p>0 ? 10*log10(p) : nil) }
         let events = (0..<Int(qc_event_count(q))).map { i -> Incident in let e=qc_events(q)![i]; return Incident(id:i,startFrame:e.start,endFrame:e.end,channel:Int(e.channel)) }
         let tp=metric(Int32(QC_TP)), integrated=metric(Int32(QC_I))
@@ -149,8 +170,9 @@ final class Analyzer {
         dynamics.emit();result.dynamics=dynamics.slices
         sub.emit();result.subSlices=sub.slices
         result.anomalies=discontinuities.events;result.anomalyCount=discontinuities.count
-        result.limitations.append("Klik/stilte-check: heuristische luisterkandidaten, maximaal 512 opgeslagen. Klikken: geïsoleerde 1-sample-impulsen; stilte: 10-ms-blokken onder −90 dBFS, 20 ms–10 s, direct geflankeerd door >−45 dBFS. Begin/eindstilte uitgesloten. Geen garantie voor alle exportfouten of instrumentuitval.")
+        result.limitations.append("Klik/stilte-check: heuristische luisterkandidaten, maximaal 512 opgeslagen. Klikken: geïsoleerde impulsen en abrupte stappen met rustig golfvormverloop eromheen; digitale nul-gaten van 1–20 ms met actieve flanken; overige stilte: 10-ms-blokken onder −90 dBFS, 20 ms–10 s, direct geflankeerd door >−45 dBFS. Begin/eindstilte uitgesloten. Geen garantie voor alle exportfouten of instrumentuitval.")
         result.windowStartFrame=firstFrame;result.sourceFrames=file.length;result.toneSlices=extractSlices(tonal)
+        if firstFrame==0 && measuredFrames==file.length {result.referenceIdentity=ReferenceIdentities.shared.resolve(hash:hash,duration:result.duration,slices:result.toneSlices)}
         return result
     }
 }

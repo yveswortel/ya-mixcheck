@@ -2,6 +2,7 @@
 #define YA_MEASURE_H
 #include <stdint.h>
 #include "Features.h"
+#include "PreviewGain.h"
 #define QC_WAVE 2048
 #define QC_BANDS 120
 #define QC_EVENTS 512
