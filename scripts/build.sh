@@ -1,36 +1,32 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
-mkdir -p /private/tmp/ya-mixcheck-module-cache "build/YA-MixCheck.app/Contents/MacOS" "build/YA-MixCheck.app/Contents/Resources"
-clang -O2 -I Vendor -I Sources -c Vendor/ebur128.c -o build/ebur128.o
-clang -O2 -Wall -Wextra -I Vendor -I Sources -c Sources/Measure.c -o build/Measure.o
-clang -O2 -Wall -Wextra -I Sources -c Sources/Features.c -o build/Features.o
-clang -O2 -I Vendor -I Sources -c Sources/MP3.c -o build/MP3.o
-clang -O2 -I Vendor -I Sources -c Sources/FLAC.c -o build/FLAC.o
-swiftc -O -swift-version 5 -module-cache-path /private/tmp/ya-mixcheck-module-cache -import-objc-header Sources/Measure.h Sources/*.swift build/Measure.o build/Features.o build/MP3.o build/FLAC.o build/ebur128.o -o "build/YA-MixCheck.app/Contents/MacOS/YA-MixCheck" -framework SwiftUI -framework AppKit -framework AVFoundation -framework CryptoKit
-cp Vendor/dr_libs/LICENSE "build/YA-MixCheck.app/Contents/Resources/dr_flac-LICENSE.txt"
-cp Vendor/COPYING "build/YA-MixCheck.app/Contents/Resources/libebur128-LICENSE.txt"
-cp Vendor/minimp3/LICENSE "build/YA-MixCheck.app/Contents/Resources/minimp3-LICENSE.txt"
-cat > "build/YA-MixCheck.app/Contents/Info.plist" <<'PLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict>
-<key>CFBundleName</key><string>YA-MixCheck</string>
-<key>CFBundleDisplayName</key><string>YA-MixCheck</string>
-<key>CFBundleExecutable</key><string>YA-MixCheck</string>
-<key>CFBundleIdentifier</key><string>audio.yves.mixcheck</string>
-<key>CFBundleVersion</key><string>20</string>
-<key>CFBundleShortVersionString</key><string>0.5.0</string>
-<key>CFBundleIconFile</key><string>AppIcon</string>
-<key>CFBundlePackageType</key><string>APPL</string>
-<key>LSMinimumSystemVersion</key><string>15.0</string>
-<key>NSHighResolutionCapable</key><true/>
-</dict></plist>
-PLIST
-if [ -f ReferenceLibrary/ToneReferences.json ]; then cp ReferenceLibrary/ToneReferences.json "build/YA-MixCheck.app/Contents/Resources/"; fi
-cp Assets/AppIcon.icns "build/YA-MixCheck.app/Contents/Resources/AppIcon.icns"
-xattr -cr "build/YA-MixCheck.app"
-codesign --force --sign - "build/YA-MixCheck.app"
-printf 'Built: %s/build/YA-MixCheck.app\n' "$PWD"
-
-if [ -f ReferenceLibrary/DynamicsReferences.json ]; then cp ReferenceLibrary/DynamicsReferences.json build/YA-MixCheck.app/Contents/Resources/; codesign --force --sign - build/YA-MixCheck.app; fi
+root="$PWD"
+python="$(command -v python3)"
+stage="$(mktemp -d /private/tmp/ya-mixcheck-build.XXXXXX)"
+trap 'rm -rf "$stage"' EXIT
+"$python" scripts/release_tools.py snapshot "$root" "$stage"
+arch="$("$python" scripts/release_tools.py config "$root" architecture)"
+minimum="$("$python" scripts/release_tools.py config "$root" minimumMacOS)"
+target="${arch}-apple-macos${minimum}"
+app="$stage/YA-MixCheck.app"
+mkdir -p "$app/Contents/MacOS" "$stage/objects" /private/tmp/ya-mixcheck-module-cache
+cd "$stage/source"
+{ xcrun clang --version | sed -n '1p'; xcrun swiftc --version | sed -n '1p'; } > "$stage/toolchain.txt"
+for unit in ebur128 Measure Features MP3 FLAC PreviewGain; do
+    source="Sources/$unit.c"
+    if [ "$unit" = ebur128 ]; then source=Vendor/ebur128.c; fi
+    xcrun clang -target "$target" -O2 -Wall -Wextra -I Vendor -I Sources -c "$source" -o "$stage/objects/$unit.o"
+done
+xcrun swiftc -target "$target" -O -swift-version 5 -module-cache-path /private/tmp/ya-mixcheck-module-cache -import-objc-header Sources/Measure.h Sources/*.swift "$stage"/objects/*.o -o "$app/Contents/MacOS/YA-MixCheck" -framework SwiftUI -framework AppKit -framework AVFoundation -framework CryptoKit
+"$python" scripts/release_tools.py finish "$stage"
+test "$(lipo -archs "$app/Contents/MacOS/YA-MixCheck")" = "$arch"
+codesign --force --sign - "$app"
+codesign --verify --deep --strict "$app"
+"$python" scripts/release_tools.py receipt "$root" "$app" "$stage/build-receipt.json"
+# Only the generated build is replaced, after the complete local build passed its checks.
+mkdir -p "$root/build"
+rm -rf "$root/build/YA-MixCheck.app"
+/usr/bin/ditto --norsrc --noextattr "$app" "$root/build/YA-MixCheck.app"
+cp "$stage/build-receipt.json" "$root/build/YA-MixCheck-build.json"
+printf 'Built: %s/build/YA-MixCheck.app (arm64, macOS %s; tests not run by build.sh)\n' "$root" "$minimum"
